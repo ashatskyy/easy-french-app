@@ -6,61 +6,89 @@
     <meta name="google" content="notranslate" />
     <title>new-test-Français facile</title>
     <link rel="stylesheet" href="./main.css" />
-  
   </head>
   <body>
-    <header>
-      <div >
-				<h1>Français facile</h1>
-				 <div class="heder-p-conatiner">
-					 <span class="p-title">Écris!</span>
-					 <span class="p-title">Écoute!</span>
-					 <span class="p-title">Répète!</span>
-
-				 </div>
-			</div>
-
-      <h2 id="open-modal" class="open-modal">Publier</h2>
-    </header>
-    <main>
-      <div class="modal-window-write" id="modal-window-write">
-        <div class="modal-window-write-close-button-container">
-          <button
-            id="modal-window-write-close-button"
-            class="modal-window-write-close-button"
-          >
-            X
-          </button>
+    <div class="page" id="appPage" hidden>
+      <header>
+        <div>
+          <h1>Français facile</h1>
+          <div class="heder-p-conatiner">
+            <span class="p-title">Écris!</span>
+            <span class="p-title">Écoute!</span>
+            <span class="p-title">Répète!</span>
+          </div>
         </div>
-        <form action="/submit" method="post">
-          <div>
-            <label for="story" class="label-for-story-input">Next Story</label>
-            <textarea
-						  class="textarea"
-              id="textarea"
-              name="story"
-              placeholder="Écrivez ou collez votre texte..."
-              required
-              autocomplete="off"
-            ></textarea>
+
+        <h2 id="open-modal" class="open-modal">Publier</h2>
+      </header>
+      <main>
+        <div class="modal-window-write" id="modal-window-write">
+          <div class="modal-window-write-close-button-container">
+            <button
+              id="modal-window-write-close-button"
+              class="modal-window-write-close-button"
+            >
+              X
+            </button>
           </div>
-          <div class="submit-button-container">
-            <button type="submit" class="send-button">Envoyer</button>
+          <form action="/submit" method="post" id="storyForm">
+            <div>
+              <label for="story" class="label-for-story-input"
+                >Next Story</label
+              >
+              <textarea
+                class="textarea"
+                id="textarea"
+                name="story"
+                placeholder="Écrivez ou collez votre texte..."
+                required
+                autocomplete="off"
+              ></textarea>
+            </div>
+            <div class="submit-button-container">
+              <button type="submit" class="send-button">Envoyer</button>
+            </div>
+          </form>
+        </div>
+        <div class="storys-conatiner" id="storys-conatiner"></div>
+
+        <div class="overlay-background-for-delete-story-mode">
+          <div class="modal-window-delete">
+            <p class="modal-window-delete-message"></p>
+            <div class="modal-window-delete-buttons-container">
+              <button class="modal-window-delete-button-yes">YES</button>
+              <button class="modal-window-delete-button-no">NO</button>
+            </div>
           </div>
+        </div>
+      </main>
+    </div>
+
+		<div class="overlay-background-for-login" hidden>
+      <section id="loginPage">
+        <form id="loginForm" class="login-form">
+          <input
+            class="login-form-email"
+            type="email"
+            id="emailInput"
+            placeholder="E-mail"
+            autocomplete="email"
+          />
+          <input
+            class="login-form-password"
+            type="password"
+            id="passwordInput"
+            placeholder="Mot de passe"
+            autocomplete="current-password"
+          />
+
+          <button type="submit" class="login-form-submit-button">Entrer</button>
         </form>
-      </div>
-      <div class="storys-conatiner" id="storys-conatiner"></div>
 
-      <div class="overlay-background-for-delete-story-mode">
-        <div class="modal-window-delete">
-          <p class="modal-window-delete-message"></p>
-          <div class="modal-window-delete-buttons-container">
-            <button class="modal-window-delete-button-yes">YES</button>
-            <button class="modal-window-delete-button-no">NO</button>
-          </div>
-        </div>
-      </div>
-    </main>
-    <script type="module"  src="./app.js"></script>
+        <p id="loginError"></p>
+      </section>
+    </div>
+
+    <script type="module" src="./app.js"></script>
   </body>
 </html>

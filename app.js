@@ -14,7 +14,17 @@ import {
   orderBy,
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
-const currentUser = "alex";
+
+import {
+  getAuth,
+  setPersistence,
+  browserLocalPersistence,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBVSORg-sm9n4YPIO2eQl-Dex8ryZRu0g4",
@@ -29,6 +39,90 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
+
+await setPersistence(auth, browserLocalPersistence);
+
+const loginPage = document.querySelector("#loginPage");
+const appPage = document.querySelector("#appPage");
+
+const loginForm = document.querySelector("#loginForm");
+const emailInput = document.querySelector("#emailInput");
+const passwordInput = document.querySelector("#passwordInput");
+const loginError = document.querySelector("#loginError");
+
+
+
+
+let currentUser = null;
+
+
+const overlayBackgroundForLogin = document.querySelector(
+  ".overlay-background-for-login",
+);
+
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = emailInput.value;
+  const password = passwordInput.value;
+
+  loginError.textContent = "";
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    loginError.textContent = "E-mail ou mot de passe incorrect";
+    console.error(error);
+  }
+});
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+		loginPage.hidden = false;
+		overlayBackgroundForLogin.hidden = false;
+    appPage.hidden = true;
+    return;
+  }
+	
+  currentUser = user.uid;
+	
+  loginPage.hidden = true;
+	overlayBackgroundForLogin.hidden = true;
+  appPage.hidden = false;
+
+  await loadStories();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function formatGreenwich(dateStr) {
   const date = new Date(dateStr);
@@ -103,9 +197,9 @@ modalWindowWriteCloseButton.addEventListener("click", function () {
   modalWindowWrite.style.display = "none";
 });
 
-const form = document.querySelector("form");
+const storyForm = document.querySelector("#storyForm");
 
-form.addEventListener("submit", async (e) => {
+storyForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   if (!textarea.value.trim()) return;
@@ -162,7 +256,7 @@ const snapshot = await getDocs(storiesQuery);
     .join("");
 }
 
-await loadStories();
+// await loadStories();
 
 const overlayBackgroundForDeleteStory = document.querySelector(
   ".overlay-background-for-delete-story-mode",
