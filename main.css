@@ -41,6 +41,7 @@ header {
 
 .modal-window-write-close-button {
   margin-right: 20px;
+	font-size: 24px;
 }
 
 main {
@@ -150,6 +151,8 @@ textarea {
   position: absolute;
   top: 0;
   right: 0;
+	font-size: 24px;
+	/* font-weight: 100; */
 }
 
 .overlay-background-for-delete-story-mode {

@@ -247,7 +247,7 @@ const snapshot = await getDocs(storiesQuery);
             data-id="${story.id}"
             data-created-at="${createdAt}"
           >
-            X
+            &times;
           </button>
         </p>
         <hr>
