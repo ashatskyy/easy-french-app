@@ -14,7 +14,6 @@ import {
   orderBy,
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
-
 import {
   getAuth,
   setPersistence,
@@ -22,9 +21,6 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-
-
-
 
 const firebaseConfig = {
   apiKey: "AIzaSyBVSORg-sm9n4YPIO2eQl-Dex8ryZRu0g4",
@@ -51,8 +47,6 @@ const loginForm = document.querySelector("#loginForm");
 const emailInput = document.querySelector("#emailInput");
 const passwordInput = document.querySelector("#passwordInput");
 const loginError = document.querySelector("#loginError");
-
-
 
 
 let currentUser = null;
@@ -95,33 +89,6 @@ onAuthStateChanged(auth, async (user) => {
 
   await loadStories();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 function formatGreenwich(dateStr) {
@@ -255,8 +222,6 @@ const snapshot = await getDocs(storiesQuery);
     })
     .join("");
 }
-
-// await loadStories();
 
 const overlayBackgroundForDeleteStory = document.querySelector(
   ".overlay-background-for-delete-story-mode",
