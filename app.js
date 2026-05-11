@@ -316,7 +316,7 @@ function sound(text) {
   const msg = new SpeechSynthesisUtterance(text);
 
   msg.lang = "fr-FR";
-  msg.rate = 0.75;
+  msg.rate = 0.8;
 
   setTimeout(() => {
     window.speechSynthesis.speak(msg);
