@@ -150,6 +150,17 @@ textarea.addEventListener("input", function () {
   this.style.height = this.scrollHeight + "px";
 });
 
+// textarea.addEventListener("input", function () {
+//   const scrollY = window.scrollY;
+//   const scrollTop = this.scrollTop;
+
+//   this.style.height = "auto";
+//   this.style.height = this.scrollHeight + "px";
+
+//   this.scrollTop = scrollTop;
+//   window.scrollTo(0, scrollY);
+// });
+
 const openModal = document.getElementById("open-modal");
 const modalWindowWrite = document.getElementById("modal-window-write");
 const modalWindowWriteCloseButton = document.getElementById(
