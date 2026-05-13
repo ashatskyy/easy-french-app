@@ -98,7 +98,7 @@ form {
 textarea {
   width: 100%;
   min-height: 250px;
-  max-height: 60vh;
+  /* max-height: 60vh; */
 
   padding: 12px 20px;
 
