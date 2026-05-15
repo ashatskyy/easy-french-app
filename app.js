@@ -129,7 +129,7 @@ function addPlayButton(content) {
   const safeContent = escapeHtml(content);
 
   const playButton = `
-    <button class="play-button" data-story="${safeContent}">&#9654;</button>
+    <button class="play-button" data-story="${safeContent}" data-state="play">&#9654;</button>
   `;
 
   return safeContent.replace(
@@ -284,10 +284,12 @@ modalWindowDeleteButtonNo.addEventListener("click", () => {
 
 function sound(text, button) {
 
-  // if (button.innerHTML === "&#9209;") {
-  if (button.textContent === "⏹") {
+
+  if (button.dataset.state === "stop") {
+
     window.speechSynthesis.cancel();
-    button.innerHTML = "&#9654;";
+		button.innerHTML = "&#9654;";
+		 button.dataset.state = "play";
     return;
 	}
 	
@@ -299,11 +301,13 @@ function sound(text, button) {
   msg.rate = 0.8;
 
   msg.onstart = () => {
-    button.innerHTML = "&#9209;";
+		button.innerHTML = "&#9209;";
+		button.dataset.state = "stop";
   };
 
   msg.onend = () => {
-    button.innerHTML = "&#9654;";
+		button.innerHTML = "&#9654;";
+		button.dataset.state = "play";
   };
 
   setTimeout(() => {
