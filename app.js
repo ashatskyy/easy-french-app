@@ -132,6 +132,20 @@ function addPlayButton(content) {
     <button class="play-button" data-story="${safeContent}" data-state="play">&#9654;</button>
   `;
 
+
+// const playIcon = `
+//   <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+//     <polygon points="2,1 11,6 2,11" fill="currentColor"></polygon>
+//   </svg>
+// `;
+
+// const playButton = `
+//   <button class="play-button" data-story="${safeContent}" data-state="play">
+//     ${playIcon}
+//   </button>
+// `;
+
+
   return safeContent.replace(
     /(\S+)\s*$/,
     `<span class="no-break">$1&nbsp;${playButton}</span>`,
@@ -261,10 +275,13 @@ document.addEventListener("click", (e) => {
   }
 
   if (e.target.classList.contains("play-button")) {
-    const currentStory = e.target.dataset.story;
-    let button = e.target;
+  // if (e.target.closest(".play-button")) {
 
-    sound(currentStory, button);
+	const currentStory = e.target.dataset.story;
+    // let button = e.target;
+
+    // sound(currentStory, button);
+    sound(currentStory);
   }
 });
 
@@ -285,13 +302,18 @@ modalWindowDeleteButtonNo.addEventListener("click", () => {
 function sound(text, button) {
 
 
-  if (button.dataset.state === "stop") {
+//   if (button.dataset.state === "stop") {
 
-    window.speechSynthesis.cancel();
-		button.innerHTML = "&#9654;";
-		 button.dataset.state = "play";
-    return;
-	}
+//     window.speechSynthesis.cancel();
+// 		button.innerHTML = "&#9654;";
+//  button.innerHTML = `
+//     <svg width="20" height="20" viewBox="0 0 12 12" aria-hidden="true">
+//       <polygon points="2,1 11,6 2,11" fill="currentColor"></polygon>
+//     </svg>
+//   `;
+// 		 button.dataset.state = "play";
+//     return;
+// 	}
 	
 	window.speechSynthesis.cancel();
 	
@@ -309,6 +331,25 @@ function sound(text, button) {
 		button.innerHTML = "&#9654;";
 		button.dataset.state = "play";
   };
+
+// msg.onstart = () => {
+//   button.innerHTML = `
+//     <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+//       <rect x="1" y="1" width="10" height="10" fill="currentColor"></rect>
+//     </svg>
+//   `;
+//   button.dataset.state = "stop";
+// };
+
+// msg.onend = () => {
+//   button.innerHTML = `
+//     <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+//       <polygon points="2,1 11,6 2,11" fill="currentColor"></polygon>
+//     </svg>
+//   `;
+//   button.dataset.state = "play";
+// };
+
 
   setTimeout(() => {
     window.speechSynthesis.speak(msg);
