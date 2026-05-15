@@ -37,7 +37,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-
 await setPersistence(auth, browserLocalPersistence);
 
 const loginPage = document.querySelector("#loginPage");
@@ -48,14 +47,11 @@ const emailInput = document.querySelector("#emailInput");
 const passwordInput = document.querySelector("#passwordInput");
 const loginError = document.querySelector("#loginError");
 
-
 let currentUser = null;
-
 
 const overlayBackgroundForLogin = document.querySelector(
   ".overlay-background-for-login",
 );
-
 
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -75,21 +71,20 @@ loginForm.addEventListener("submit", async (e) => {
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-		loginPage.hidden = false;
-		overlayBackgroundForLogin.hidden = false;
+    loginPage.hidden = false;
+    overlayBackgroundForLogin.hidden = false;
     appPage.hidden = true;
     return;
   }
-	
+
   currentUser = user.uid;
-	
+
   loginPage.hidden = true;
-	overlayBackgroundForLogin.hidden = true;
+  overlayBackgroundForLogin.hidden = true;
   appPage.hidden = false;
 
   await loadStories();
 });
-
 
 function formatGreenwich(dateStr) {
   const date = new Date(dateStr);
@@ -194,13 +189,12 @@ storyForm.addEventListener("submit", async (e) => {
 const container = document.getElementById("storys-conatiner");
 
 async function loadStories() {
-	const storiesQuery = query(
-  collection(db, "users", currentUser, "stories"),
-  orderBy("createdAt", "desc")
-);
+  const storiesQuery = query(
+    collection(db, "users", currentUser, "stories"),
+    orderBy("createdAt", "desc"),
+  );
 
-const snapshot = await getDocs(storiesQuery);
-
+  const snapshot = await getDocs(storiesQuery);
 
   const stories = snapshot.docs.map((doc) => {
     return {
@@ -268,7 +262,9 @@ document.addEventListener("click", (e) => {
 
   if (e.target.classList.contains("play-button")) {
     const currentStory = e.target.dataset.story;
-    sound(currentStory);
+    let button = e.target;
+
+    sound(currentStory, button);
   }
 });
 
@@ -286,13 +282,29 @@ modalWindowDeleteButtonNo.addEventListener("click", () => {
   currentStoryId = null;
 });
 
-function sound(text) {
-  window.speechSynthesis.cancel();
+function sound(text, button) {
 
+  // if (button.innerHTML === "&#9209;") {
+  if (button.textContent === "⏹") {
+    window.speechSynthesis.cancel();
+    button.innerHTML = "&#9654;";
+    return;
+	}
+	
+	window.speechSynthesis.cancel();
+	
   const msg = new SpeechSynthesisUtterance(text);
 
   msg.lang = "fr-FR";
   msg.rate = 0.8;
+
+  msg.onstart = () => {
+    button.innerHTML = "&#9209;";
+  };
+
+  msg.onend = () => {
+    button.innerHTML = "&#9654;";
+  };
 
   setTimeout(() => {
     window.speechSynthesis.speak(msg);
