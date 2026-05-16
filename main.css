@@ -131,6 +131,8 @@ textarea {
   position: relative;
   padding-right: 25px;
 	line-height: 1.5;
+	/* border: 1px solid #000; */
+	margin: 0;
 }
 
 .no-break {
@@ -149,7 +151,10 @@ textarea {
   align-items: center;
   justify-content: center;
 
-	  vertical-align: middle;
+	vertical-align: middle;
+	padding: 0;
+	margin: 0;
+	
 }
 
 
