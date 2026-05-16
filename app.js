@@ -129,22 +129,12 @@ function addPlayButton(content) {
   const safeContent = escapeHtml(content);
 
   const playButton = `
-    <button class="play-button" data-story="${safeContent}" data-state="play">&#9654;</button>
+    <button class="play-button" data-story="${safeContent}" data-state="play">
+  <svg width="16" height="16" viewBox="0 0 16 16">
+    <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
+  </svg>
+</button>
   `;
-
-
-// const playIcon = `
-//   <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-//     <polygon points="2,1 11,6 2,11" fill="currentColor"></polygon>
-//   </svg>
-// `;
-
-// const playButton = `
-//   <button class="play-button" data-story="${safeContent}" data-state="play">
-//     ${playIcon}
-//   </button>
-// `;
-
 
   return safeContent.replace(
     /(\S+)\s*$/,
@@ -158,17 +148,6 @@ textarea.addEventListener("input", function () {
   this.style.height = "auto";
   this.style.height = this.scrollHeight + "px";
 });
-
-// textarea.addEventListener("input", function () {
-//   const scrollY = window.scrollY;
-//   const scrollTop = this.scrollTop;
-
-//   this.style.height = "auto";
-//   this.style.height = this.scrollHeight + "px";
-
-//   this.scrollTop = scrollTop;
-//   window.scrollTo(0, scrollY);
-// });
 
 const openModal = document.getElementById("open-modal");
 const modalWindowWrite = document.getElementById("modal-window-write");
@@ -260,6 +239,8 @@ const modalWindowDeleteButtonNo = document.querySelector(
 
 let currentStoryId = null;
 
+let lastButton = null;
+
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("modal-window-delete-story-call-button")) {
     overlayBackgroundForDeleteStory.style.display = "flex";
@@ -274,15 +255,25 @@ document.addEventListener("click", (e) => {
     `;
   }
 
-  if (e.target.classList.contains("play-button")) {
-  // if (e.target.closest(".play-button")) {
+  // if (e.target.classList.contains("play-button")) {
+if (e.target.closest(".play-button")) {
+  const button = e.target.closest(".play-button");
+  const currentStory = button.dataset.story;
 
-	const currentStory = e.target.dataset.story;
-    // let button = e.target;
+  if (lastButton && lastButton !== button) {
+    lastButton.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 16 16">
+        <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
+      </svg>
+    `;
 
-    // sound(currentStory, button);
-    sound(currentStory);
+    lastButton.dataset.state = "play";
   }
+
+  lastButton = button;
+
+  sound(currentStory, button);
+}
 });
 
 modalWindowDeleteButtonYes.addEventListener("click", async () => {
@@ -300,56 +291,51 @@ modalWindowDeleteButtonNo.addEventListener("click", () => {
 });
 
 function sound(text, button) {
+  if (button.dataset.state === "stop") {
+    window.speechSynthesis.cancel();
 
+    // button.innerHTML = "&#9654;";
+    button.innerHTML = `
+  <svg width="16" height="16" viewBox="0 0 16 16">
+    <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
+  </svg>
+`;
+    button.dataset.state = "play";
 
-//   if (button.dataset.state === "stop") {
+    lastButton = null;
+    return;
+  }
 
-//     window.speechSynthesis.cancel();
-// 		button.innerHTML = "&#9654;";
-//  button.innerHTML = `
-//     <svg width="20" height="20" viewBox="0 0 12 12" aria-hidden="true">
-//       <polygon points="2,1 11,6 2,11" fill="currentColor"></polygon>
-//     </svg>
-//   `;
-// 		 button.dataset.state = "play";
-//     return;
-// 	}
-	
-	window.speechSynthesis.cancel();
-	
+  window.speechSynthesis.cancel();
+
   const msg = new SpeechSynthesisUtterance(text);
 
   msg.lang = "fr-FR";
   msg.rate = 0.8;
 
   msg.onstart = () => {
-		button.innerHTML = "&#9209;";
-		button.dataset.state = "stop";
+    // button.innerHTML = "&#9209;";
+    button.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 16 16">
+      <rect x="4" y="3" width="3" height="10" fill="currentColor"></rect>
+      <rect x="9" y="3" width="3" height="10" fill="currentColor"></rect>
+    </svg>
+  `;
+
+    button.dataset.state = "stop";
   };
 
   msg.onend = () => {
-		button.innerHTML = "&#9654;";
-		button.dataset.state = "play";
+    // button.innerHTML = "&#9654;";
+    button.innerHTML = `
+  <svg width="16" height="16" viewBox="0 0 16 16">
+    <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
+  </svg>
+`;
+    button.dataset.state = "play";
+
+    lastButton = null;
   };
-
-// msg.onstart = () => {
-//   button.innerHTML = `
-//     <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-//       <rect x="1" y="1" width="10" height="10" fill="currentColor"></rect>
-//     </svg>
-//   `;
-//   button.dataset.state = "stop";
-// };
-
-// msg.onend = () => {
-//   button.innerHTML = `
-//     <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-//       <polygon points="2,1 11,6 2,11" fill="currentColor"></polygon>
-//     </svg>
-//   `;
-//   button.dataset.state = "play";
-// };
-
 
   setTimeout(() => {
     window.speechSynthesis.speak(msg);
