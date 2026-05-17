@@ -1,3 +1,7 @@
+*{
+	box-sizing: border-box;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0 auto;
@@ -225,19 +229,31 @@ textarea {
   position: fixed;
   inset: 0;
   background-color: rgba(225, 225, 225, 0.7);
-  padding: 50px;
+  /* padding: 50px; */
   display: flex;
   justify-content: center;
   align-items: center;
+
 }
 
 .login-form {
   display: flex;
 
   flex-direction: column;
-  align-items: flex-end;
+  /* align-items: flex-end; */
+  align-items: center;
 
   font-size: 14px;
+	/* border: 1px solid #000; */
+}
+
+.login-fieldset{
+	border: 0;
+	/* width: 250px; */
+	/* border: 1px solid red; */
+	display: flex;
+  align-items: flex-end;
+	flex-direction: column;
 }
 
 .login-form-email,
@@ -291,9 +307,35 @@ textarea {
 
 #loginError {
   min-height: 18px;
-  margin-top: 20px;
+	margin: 0;
+  margin-top: 5px;
   font-size: 14px;
-
+/* border: 1px solid #000; */
   text-align: right;
-  margin-right: 4px;
+  margin-right: 16px;
+	
+}
+
+.login-page{
+/* border: 1px solid blue; */
+max-width: 320px;
+margin: 0;
+padding: 0;
+}
+
+.login-page-info{
+	width: 278px;
+/* align-items: center; */
+
+display: flex;
+justify-content: center;
+}
+
+.attention-entry{
+	font-size: 10px;
+	/* border: 1px solid #000; */
+	/* text-align: left; */
+	text-align: center;
+	margin-bottom: 7px;
+	width: 250px;
 }
