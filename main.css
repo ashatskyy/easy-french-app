@@ -141,8 +141,12 @@ textarea {
 
 
 .play-button {
-  width: 32px;
-  height: 32px;
+  /* width: 32px;
+  height: 32px; */
+  /* width: 22px;
+  height: 22px; */
+  /* width: 18px;
+  height: 18px; */
   border: none;
   border-radius: 50%;
   cursor: pointer;
@@ -154,7 +158,8 @@ textarea {
 	vertical-align: middle;
 	padding: 0;
 	margin: 0;
-	
+	/* border: 1px solid #000; */
+	background-color: transparent;
 }
 
 

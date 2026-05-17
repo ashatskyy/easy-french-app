@@ -316,10 +316,9 @@ function sound(text, button) {
   msg.onstart = () => {
     // button.innerHTML = "&#9209;";
     button.innerHTML = `
-    <svg width="16" height="16" viewBox="0 0 16 16">
-      <rect x="4" y="3" width="3" height="10" fill="currentColor"></rect>
-      <rect x="9" y="3" width="3" height="10" fill="currentColor"></rect>
-    </svg>
+     <svg width="16" height="16" viewBox="0 0 16 16">
+    <rect x="4" y="4" width="8" height="8" fill="currentColor"></rect>
+  </svg>
   `;
 
     button.dataset.state = "stop";
