@@ -334,7 +334,7 @@ document.addEventListener("click", (e) => {
   // if (e.target.classList.contains("play-button")) {
 	if (e.target.closest(".play-button")) {
 		window.speechSynthesis.cancel();
-
+listenToAll.innerHTML = playAllIcon;
 		
     const button = e.target.closest(".play-button");
     const currentStory = button.dataset.story;
