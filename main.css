@@ -13,12 +13,23 @@ h1,
   margin: 0;
 }
 
+.open-modal {
+	font-size: 24px;
+	background-color: transparent;
+	border: 0;
+	font-weight: 600;
+}
+
+
 header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 20px;
+	margin-bottom: 0;
 }
+
+
 
 .heder-p-conatiner {
   display: flex;
@@ -102,6 +113,7 @@ textarea {
   display: flex;
   justify-content: right;
   margin-right: 20px;
+	margin-bottom: 12px;
 }
 
 .send-button,
@@ -124,7 +136,7 @@ textarea {
 }
 
 .storys-conatiner {
-  margin-top: 40px;
+  margin-top: 10px;
   width: 100%;
   padding-left: 20px;
   padding-right: 20px;
@@ -163,6 +175,39 @@ textarea {
 	padding: 0;
 	margin: 0;
 	/* border: 1px solid #000; */
+	background-color: transparent;
+}
+
+.listen-to-all-button-container{
+  display: flex;
+	/* border: 1px solid #000; */
+	width: 100%;
+	justify-content: flex-end;
+	margin: 0;
+	margin-right: 90px;
+	/* margin: 0; */
+
+}
+
+.listen-to-all{
+  width: 42px;
+  height: 42px;
+  /* width: 22px;
+  height: 22px; */
+  /* width: 18px;
+  height: 18px; */
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+	vertical-align: middle;
+	padding: 0;
+	margin: 0;
+	border: 1px solid #000;
 	background-color: transparent;
 }
 

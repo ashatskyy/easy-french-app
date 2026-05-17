@@ -53,6 +53,10 @@ const overlayBackgroundForLogin = document.querySelector(
   ".overlay-background-for-login",
 );
 
+const listenToAll = document.getElementById("listen-to-all");
+
+
+
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -125,9 +129,11 @@ function escapeHtml(text) {
     .replaceAll(">", "&gt;");
 }
 
+const contentForAllPlay = [];
+
 function addPlayButton(content) {
   const safeContent = escapeHtml(content);
-
+	contentForAllPlay.push(content)
   const playButton = `
     <button class="play-button" data-story="${safeContent}" data-state="play">
   <svg width="16" height="16" viewBox="0 0 16 16">
@@ -221,6 +227,76 @@ async function loadStories() {
     .join("");
 }
 
+
+
+const playAllIcon = `
+  <svg width="16" height="16" viewBox="0 0 16 16">
+    <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
+  </svg>
+`;
+
+const stopIcon = `
+  <svg width="16" height="16" viewBox="0 0 16 16">
+    <rect x="4" y="4" width="8" height="8" fill="currentColor"></rect>
+  </svg>
+`;
+
+listenToAll.innerHTML = playAllIcon;
+
+let isPlayingAll = false;
+let timeoutId = null;
+
+listenToAll.addEventListener("click", () => {
+console.log(contentForAllPlay);
+  if (isPlayingAll) {
+    isPlayingAll = false;
+    window.speechSynthesis.cancel();
+    clearTimeout(timeoutId);
+    listenToAll.innerHTML = playAllIcon;
+    return;
+  }
+
+  isPlayingAll = true;
+  window.speechSynthesis.cancel();
+  listenToAll.innerHTML = stopIcon;
+
+  let i = 0;
+
+  function speakNext() {
+    if (!isPlayingAll) return;
+
+    if (i >= contentForAllPlay.length) {
+      isPlayingAll = false;
+      listenToAll.innerHTML = playAllIcon;
+      return;
+    }
+
+    const msg = new SpeechSynthesisUtterance(contentForAllPlay[i]);
+    msg.lang = "fr-FR";
+    msg.rate = 0.8;
+
+    msg.onend = () => {
+      i++;
+
+      timeoutId = setTimeout(() => {
+        speakNext();
+      }, 2000);
+    };
+
+    window.speechSynthesis.speak(msg);
+  }
+
+  speakNext();
+});
+
+
+
+
+
+
+
+
+
 const overlayBackgroundForDeleteStory = document.querySelector(
   ".overlay-background-for-delete-story-mode",
 );
@@ -256,24 +332,27 @@ document.addEventListener("click", (e) => {
   }
 
   // if (e.target.classList.contains("play-button")) {
-if (e.target.closest(".play-button")) {
-  const button = e.target.closest(".play-button");
-  const currentStory = button.dataset.story;
+	if (e.target.closest(".play-button")) {
+		window.speechSynthesis.cancel();
 
-  if (lastButton && lastButton !== button) {
-    lastButton.innerHTML = `
+		
+    const button = e.target.closest(".play-button");
+    const currentStory = button.dataset.story;
+
+    if (lastButton && lastButton !== button) {
+      lastButton.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16">
         <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
       </svg>
     `;
 
-    lastButton.dataset.state = "play";
+      lastButton.dataset.state = "play";
+    }
+
+    lastButton = button;
+
+    sound(currentStory, button);
   }
-
-  lastButton = button;
-
-  sound(currentStory, button);
-}
 });
 
 modalWindowDeleteButtonYes.addEventListener("click", async () => {
