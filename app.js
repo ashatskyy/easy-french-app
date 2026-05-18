@@ -55,8 +55,6 @@ const overlayBackgroundForLogin = document.querySelector(
 
 const listenToAll = document.getElementById("listen-to-all");
 
-
-
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -133,7 +131,7 @@ const contentForAllPlay = [];
 
 function addPlayButton(content) {
   const safeContent = escapeHtml(content);
-	contentForAllPlay.push(content)
+  contentForAllPlay.push(content);
   const playButton = `
     <button class="play-button" data-story="${safeContent}" data-state="play">
   <svg width="16" height="16" viewBox="0 0 16 16">
@@ -149,12 +147,6 @@ function addPlayButton(content) {
 }
 
 const textarea = document.getElementById("textarea");
-
-
-
-
-
-
 
 textarea.addEventListener("input", function () {
   this.style.height = "auto";
@@ -192,10 +184,6 @@ storyForm.addEventListener("submit", async (e) => {
 });
 
 const container = document.getElementById("storys-conatiner");
-
-
-
-
 
 async function loadStories() {
   const storiesQuery = query(
@@ -237,8 +225,6 @@ async function loadStories() {
     .join("");
 }
 
-
-
 const playAllIcon = `
   <svg width="16" height="16" viewBox="0 0 16 16">
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
@@ -256,8 +242,6 @@ listenToAll.innerHTML = playAllIcon;
 let isPlayingAll = false;
 let timeoutId = null;
 
-
-
 function turnStoryButtonToPlay(button) {
   if (!button) return;
 
@@ -265,18 +249,11 @@ function turnStoryButtonToPlay(button) {
   button.dataset.state = "play";
 }
 
-
-
-
 listenToAll.addEventListener("click", () => {
-
-
   if (lastButton) {
     turnStoryButtonToPlay(lastButton);
     lastButton = null;
   }
-
-
 
   if (isPlayingAll) {
     isPlayingAll = false;
@@ -319,14 +296,6 @@ listenToAll.addEventListener("click", () => {
   speakNext();
 });
 
-
-
-
-
-
-
-
-
 const overlayBackgroundForDeleteStory = document.querySelector(
   ".overlay-background-for-delete-story-mode",
 );
@@ -347,15 +316,6 @@ let currentStoryId = null;
 
 let lastButton = null;
 
-
-
-
-
-
-
-
-
-
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("modal-window-delete-story-call-button")) {
     overlayBackgroundForDeleteStory.style.display = "flex";
@@ -370,13 +330,14 @@ document.addEventListener("click", (e) => {
     `;
   }
 
+  if (e.target.closest(".play-button")) {
+    isPlayingAll = false;
+    clearTimeout(timeoutId);
 
-	if (e.target.closest(".play-button")) {
-
-		window.speechSynthesis.cancel();
+    window.speechSynthesis.cancel();
 
     listenToAll.innerHTML = playAllIcon;
-		
+
     const button = e.target.closest(".play-button");
     const currentStory = button.dataset.story;
 
@@ -414,7 +375,6 @@ function sound(text, button) {
   if (button.dataset.state === "stop") {
     window.speechSynthesis.cancel();
 
-    
     button.innerHTML = `
   <svg width="16" height="16" viewBox="0 0 16 16">
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
@@ -434,7 +394,6 @@ function sound(text, button) {
   msg.rate = 0.8;
 
   msg.onstart = () => {
-
     button.innerHTML = `
      <svg width="16" height="16" viewBox="0 0 16 16">
     <rect x="4" y="4" width="8" height="8" fill="currentColor"></rect>
@@ -445,7 +404,6 @@ function sound(text, button) {
   };
 
   msg.onend = () => {
-  
     button.innerHTML = `
   <svg width="16" height="16" viewBox="0 0 16 16">
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>

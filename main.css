@@ -1,11 +1,11 @@
 *{
 	box-sizing: border-box;
 }
+
 html {
   overflow-y: scroll;
 	scrollbar-gutter: stable;
 }
-
 
 body {
   font-family: Arial, Helvetica, sans-serif;
@@ -29,7 +29,6 @@ h1,
 	font-weight: 600;
 }
 
-
 header {
   display: flex;
   align-items: center;
@@ -39,8 +38,6 @@ header {
 
 	/* border: 1px solid #000; */
 }
-
-
 
 .heder-p-conatiner {
   display: flex;
@@ -205,23 +202,20 @@ textarea {
 .listen-to-all{
   width: 42px;
   height: 42px;
-  /* width: 22px;
-  height: 22px; */
-  /* width: 18px;
-  height: 18px; */
   border: none;
   border-radius: 50%;
-  cursor: pointer;
-
+	
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
+	
 	vertical-align: middle;
 	padding: 0;
 	margin: 0;
 	border: 1px solid #000;
 	background-color: transparent;
+	
+  cursor: pointer;
 }
 
 
