@@ -20,7 +20,7 @@
     />
     <link rel="manifest" href="./favicons/site.webmanifest" />
 
-    <title>Français facile beta 2.0</title>
+    <title>Français facile beta</title>
     <link rel="stylesheet" href="./main.css" />
   </head>
   <body>
@@ -35,9 +35,9 @@
           </div>
         </div>
 
-				<div class="header-menu">
-					<button id="open-modal" class="open-modal">Publier</button>
-				</div>
+        <div class="header-menu">
+          <button id="open-modal" class="open-modal">Publier</button>
+        </div>
       </header>
       <main>
         <div class="modal-window-write" id="modal-window-write">
@@ -49,7 +49,7 @@
               &times;
             </button>
           </div>
-          <form action="/submit" method="post" id="storyForm"> 
+          <form action="/submit" method="post" id="storyForm">
             <div>
               <label for="story" class="label-for-story-input"
                 >Next Story</label
@@ -68,9 +68,9 @@
             </div>
           </form>
         </div>
-				<div class="listen-to-all-button-container">
-								<button id="listen-to-all" class="listen-to-all"></button>
-					</div>
+        <div class="listen-to-all-button-container">
+          <button id="listen-to-all" class="listen-to-all"></button>
+        </div>
         <div class="storys-conatiner" id="storys-conatiner"></div>
 
         <div class="overlay-background-for-delete-story-mode">
@@ -87,9 +87,11 @@
 
     <div class="overlay-background-for-login" hidden>
       <section id="loginPage" class="login-page">
-				<div class="login-page-info">
+        <div class="login-page-info">
           <p class="attention-entry">
-           Attention !<br> Cette version de démonstration fonctionne uniquement dans le navigateur Chrome.
+            Attention !<br />
+            Cette version de démonstration fonctionne uniquement dans le
+            navigateur Chrome.
           </p>
         </div>
 
@@ -115,10 +117,9 @@
             </button>
           </fieldset>
         </form>
-          <p id="loginError"></p>
+        <p id="loginError"></p>
       </section>
     </div>
-
     <script type="module" src="./app.js"></script>
   </body>
 </html>
