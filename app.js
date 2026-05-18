@@ -150,6 +150,12 @@ function addPlayButton(content) {
 
 const textarea = document.getElementById("textarea");
 
+
+
+
+
+
+
 textarea.addEventListener("input", function () {
   this.style.height = "auto";
   this.style.height = this.scrollHeight + "px";
@@ -186,6 +192,10 @@ storyForm.addEventListener("submit", async (e) => {
 });
 
 const container = document.getElementById("storys-conatiner");
+
+
+
+
 
 async function loadStories() {
   const storiesQuery = query(
@@ -229,11 +239,6 @@ async function loadStories() {
 
 
 
-
-
-
-
-
 const playAllIcon = `
   <svg width="16" height="16" viewBox="0 0 16 16">
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
@@ -251,7 +256,27 @@ listenToAll.innerHTML = playAllIcon;
 let isPlayingAll = false;
 let timeoutId = null;
 
+
+
+function turnStoryButtonToPlay(button) {
+  if (!button) return;
+
+  button.innerHTML = playAllIcon;
+  button.dataset.state = "play";
+}
+
+
+
+
 listenToAll.addEventListener("click", () => {
+
+
+  if (lastButton) {
+    turnStoryButtonToPlay(lastButton);
+    lastButton = null;
+  }
+
+
 
   if (isPlayingAll) {
     isPlayingAll = false;
@@ -322,6 +347,15 @@ let currentStoryId = null;
 
 let lastButton = null;
 
+
+
+
+
+
+
+
+
+
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("modal-window-delete-story-call-button")) {
     overlayBackgroundForDeleteStory.style.display = "flex";
@@ -336,10 +370,12 @@ document.addEventListener("click", (e) => {
     `;
   }
 
-  // if (e.target.classList.contains("play-button")) {
+
 	if (e.target.closest(".play-button")) {
+
 		window.speechSynthesis.cancel();
-listenToAll.innerHTML = playAllIcon;
+
+    listenToAll.innerHTML = playAllIcon;
 		
     const button = e.target.closest(".play-button");
     const currentStory = button.dataset.story;
@@ -378,7 +414,7 @@ function sound(text, button) {
   if (button.dataset.state === "stop") {
     window.speechSynthesis.cancel();
 
-    // button.innerHTML = "&#9654;";
+    
     button.innerHTML = `
   <svg width="16" height="16" viewBox="0 0 16 16">
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
@@ -398,7 +434,7 @@ function sound(text, button) {
   msg.rate = 0.8;
 
   msg.onstart = () => {
-    // button.innerHTML = "&#9209;";
+
     button.innerHTML = `
      <svg width="16" height="16" viewBox="0 0 16 16">
     <rect x="4" y="4" width="8" height="8" fill="currentColor"></rect>
@@ -409,7 +445,7 @@ function sound(text, button) {
   };
 
   msg.onend = () => {
-    // button.innerHTML = "&#9654;";
+  
     button.innerHTML = `
   <svg width="16" height="16" viewBox="0 0 16 16">
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
