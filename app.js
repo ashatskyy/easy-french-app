@@ -229,6 +229,11 @@ async function loadStories() {
 
 
 
+
+
+
+
+
 const playAllIcon = `
   <svg width="16" height="16" viewBox="0 0 16 16">
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
@@ -247,7 +252,7 @@ let isPlayingAll = false;
 let timeoutId = null;
 
 listenToAll.addEventListener("click", () => {
-console.log(contentForAllPlay);
+
   if (isPlayingAll) {
     isPlayingAll = false;
     window.speechSynthesis.cancel();
