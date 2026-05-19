@@ -255,11 +255,13 @@ function turnStoryButtonToPlay(button) {
 }
 
 listenToAll.addEventListener("click", () => {
+  // tern off previous played button
   if (lastButton) {
     turnStoryButtonToPlay(lastButton);
     lastButton = null;
   }
 
+  //here we can tern off story stop buttons*********
   if (isPlayingAll) {
     isPlayingAll = false;
     window.speechSynthesis.cancel();
@@ -269,6 +271,14 @@ listenToAll.addEventListener("click", () => {
     document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
       child.style.background = "";
       child.style.color = "";
+
+      // 			child.querySelector(".play-button").innerHTML= `
+      //   <svg width="16" height="16" viewBox="0 0 16 16">
+      //     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
+      //   </svg>
+      // `;
+
+      // 			child.querySelector(".play-button").dataset.state = "play";
     });
 
     return;
@@ -297,14 +307,18 @@ listenToAll.addEventListener("click", () => {
     }
 
     const currentStory = allChildren[i * 2];
+    const buttonInCycle = currentStory.querySelector(".play-button");
 
     if (currentStory) {
-      // currentStory.style.background = "#D3E3FD";
       currentStory.style.background = "#EAF0F9";
-      // currentStory.style.background = "#F4EAFE";
-      // currentStory.style.background = "#EAF2FE";
-      // currentStory.style.background = "#E5F3FF";
-      // currentStory.style.color = "black";
+
+      buttonInCycle.innerHTML = `
+     <svg width="16" height="16" viewBox="0 0 16 16">
+    <rect x="4" y="4" width="8" height="8" fill="currentColor"></rect>
+  </svg>
+  `;
+
+      buttonInCycle.dataset.state = "stop";
     }
 
     const msg = new SpeechSynthesisUtterance(contentForAllPlay[i]);
@@ -315,6 +329,14 @@ listenToAll.addEventListener("click", () => {
       i++;
 
       timeoutId = setTimeout(() => {
+        buttonInCycle.innerHTML = `
+			<svg width="16" height="16" viewBox="0 0 16 16">
+				<polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
+			</svg>
+		`;
+
+        buttonInCycle.dataset.state = "play";
+
         speakNext();
       }, 2000);
     };
@@ -360,13 +382,12 @@ document.addEventListener("click", (e) => {
   }
 
   if (e.target.closest(".play-button")) {
-		isPlayingAll = false;
-		
-  document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
+    isPlayingAll = false;
+
+    document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
       child.style.background = "";
       child.style.color = "";
     });
-
 
     clearTimeout(timeoutId);
 
@@ -380,11 +401,9 @@ document.addEventListener("click", (e) => {
     const storyElement = button.closest(".story");
     storyElement.style.background = "#EAF0F9";
 
-		if (lastButton && lastButton !== button) {
-			
-			const lastStoryElement = lastButton.closest(".story");
-			lastStoryElement.style.background = "transparent";
-
+    if (lastButton && lastButton !== button) {
+      const lastStoryElement = lastButton.closest(".story");
+      lastStoryElement.style.background = "transparent";
 
       lastButton.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16">
@@ -392,9 +411,7 @@ document.addEventListener("click", (e) => {
       </svg>
     `;
 
-			lastButton.dataset.state = "play";
-			
-		
+      lastButton.dataset.state = "play";
     }
 
     lastButton = button;
@@ -418,8 +435,7 @@ modalWindowDeleteButtonNo.addEventListener("click", () => {
 });
 
 function sound(text, button) {
-	const storyElement = button.closest(".story");
-
+  const storyElement = button.closest(".story");
 
   if (button.dataset.state === "stop") {
     window.speechSynthesis.cancel();
@@ -429,8 +445,8 @@ function sound(text, button) {
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
   </svg>
 `;
-		button.dataset.state = "play";
-		
+    button.dataset.state = "play";
+
     storyElement.style.background = "transparent";
 
     lastButton = null;
@@ -460,10 +476,10 @@ function sound(text, button) {
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
   </svg>
 `;
-		button.dataset.state = "play";
-		
-		storyElement.style.background = "transparent";
-		
+    button.dataset.state = "play";
+
+    storyElement.style.background = "transparent";
+
     lastButton = null;
   };
 
