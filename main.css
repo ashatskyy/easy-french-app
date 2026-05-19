@@ -393,3 +393,28 @@ justify-content: center;
 }
 
 
+#storys-conatiner > :nth-child(3) {
+  /* background: #40E0D0; */
+  /* background: #C0C0C0; */
+  /* background: #F5F5F5; */
+
+  /* background: #E8E8E8; */
+  background: #D3E3FD;
+  /* background: #5C7795; */
+
+  color: black;
+  /* color: white; */
+}
+
+#storys-conatiner > :nth-child(37) {
+  /* background: #40E0D0; */
+  /* background: #C0C0C0; */
+  /* background: #F5F5F5; */
+
+  background: #E8E8E8;
+  /* background: #D3E3FD; */
+  /* background: #5C7795; */
+
+  color: black;
+  /* color: white; */
+}
