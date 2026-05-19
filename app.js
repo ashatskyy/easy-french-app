@@ -326,7 +326,8 @@ if (isPlayingAll) {
   const currentStory = allChildren[i * 2];
 
   if (currentStory) {
-    currentStory.style.background = "#D3E3FD";
+    // currentStory.style.background = "#D3E3FD";
+    currentStory.style.background = "#EAF0F9";
     currentStory.style.color = "black";
   }
 
