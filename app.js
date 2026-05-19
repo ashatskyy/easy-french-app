@@ -255,13 +255,29 @@ listenToAll.addEventListener("click", () => {
     lastButton = null;
   }
 
-  if (isPlayingAll) {
-    isPlayingAll = false;
-    window.speechSynthesis.cancel();
-    clearTimeout(timeoutId);
-    listenToAll.innerHTML = playAllIcon;
-    return;
-  }
+  // if (isPlayingAll) {
+  //   isPlayingAll = false;
+  //   window.speechSynthesis.cancel();
+  //   clearTimeout(timeoutId);
+  //   listenToAll.innerHTML = playAllIcon;
+  //   return;
+  // }
+
+if (isPlayingAll) {
+  isPlayingAll = false;
+  window.speechSynthesis.cancel();
+  clearTimeout(timeoutId);
+  listenToAll.innerHTML = playAllIcon;
+
+  document.querySelectorAll("#storys-conatiner > *").forEach(child => {
+    child.style.background = "";
+    child.style.color = "";
+  });
+
+  return;
+}
+
+
 
   isPlayingAll = true;
   window.speechSynthesis.cancel();
@@ -269,29 +285,68 @@ listenToAll.addEventListener("click", () => {
 
   let i = 0;
 
-  function speakNext() {
-    if (!isPlayingAll) return;
+  // function speakNext() {
+  //   if (!isPlayingAll) return;
 
-    if (i >= contentForAllPlay.length) {
-      isPlayingAll = false;
-      listenToAll.innerHTML = playAllIcon;
-      return;
-    }
+  //   if (i >= contentForAllPlay.length) {
+  //     isPlayingAll = false;
+  //     listenToAll.innerHTML = playAllIcon;
+  //     return;
+  //   }
 
-    const msg = new SpeechSynthesisUtterance(contentForAllPlay[i]);
-    msg.lang = "fr-FR";
-    msg.rate = 0.8;
+  //   const msg = new SpeechSynthesisUtterance(contentForAllPlay[i]);
+  //   msg.lang = "fr-FR";
+  //   msg.rate = 0.8;
 
-    msg.onend = () => {
-      i++;
+  //   msg.onend = () => {
+  //     i++;
 
-      timeoutId = setTimeout(() => {
-        speakNext();
-      }, 2000);
-    };
+  //     timeoutId = setTimeout(() => {
+  //       speakNext();
+  //     }, 2000);
+	//   };
+	
 
-    window.speechSynthesis.speak(msg);
+	function speakNext() {
+  if (!isPlayingAll) return;
+
+  const allChildren = document.querySelectorAll("#storys-conatiner > *");
+
+  allChildren.forEach(child => {
+    child.style.background = "";
+    child.style.color = "";
+  });
+
+  if (i >= contentForAllPlay.length) {
+    isPlayingAll = false;
+    listenToAll.innerHTML = playAllIcon;
+    return;
   }
+
+  const currentStory = allChildren[i * 2];
+
+  if (currentStory) {
+    currentStory.style.background = "#D3E3FD";
+    currentStory.style.color = "black";
+  }
+
+  const msg = new SpeechSynthesisUtterance(contentForAllPlay[i]);
+  msg.lang = "fr-FR";
+  msg.rate = 0.8;
+
+  msg.onend = () => {
+    i++;
+
+    timeoutId = setTimeout(() => {
+      speakNext();
+    }, 2000);
+  };
+
+  window.speechSynthesis.speak(msg);
+}
+
+  //   window.speechSynthesis.speak(msg);
+  // }
 
   speakNext();
 });
