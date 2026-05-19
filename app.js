@@ -285,26 +285,7 @@ if (isPlayingAll) {
 
   let i = 0;
 
-  // function speakNext() {
-  //   if (!isPlayingAll) return;
-
-  //   if (i >= contentForAllPlay.length) {
-  //     isPlayingAll = false;
-  //     listenToAll.innerHTML = playAllIcon;
-  //     return;
-  //   }
-
-  //   const msg = new SpeechSynthesisUtterance(contentForAllPlay[i]);
-  //   msg.lang = "fr-FR";
-  //   msg.rate = 0.8;
-
-  //   msg.onend = () => {
-  //     i++;
-
-  //     timeoutId = setTimeout(() => {
-  //       speakNext();
-  //     }, 2000);
-	//   };
+  
 	
 
 	function speakNext() {
@@ -328,6 +309,9 @@ if (isPlayingAll) {
   if (currentStory) {
     // currentStory.style.background = "#D3E3FD";
     currentStory.style.background = "#EAF0F9";
+    // currentStory.style.background = "#F4EAFE";
+    // currentStory.style.background = "#EAF2FE";
+    // currentStory.style.background = "#E5F3FF";
     currentStory.style.color = "black";
   }
 
