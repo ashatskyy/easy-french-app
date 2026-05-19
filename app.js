@@ -53,8 +53,9 @@ const overlayBackgroundForLogin = document.querySelector(
   ".overlay-background-for-login",
 );
 
-const listenToAll = document.getElementById("listen-to-all");
+const listenToAll = document.getElementById("listen-to-all-button");
 
+//FORM HANDLING
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -129,6 +130,7 @@ function escapeHtml(text) {
 
 const contentForAllPlay = [];
 
+//here we use story.content
 function addPlayButton(content) {
   const safeContent = escapeHtml(content);
   contentForAllPlay.push(content);
@@ -183,6 +185,7 @@ storyForm.addEventListener("submit", async (e) => {
   window.location.reload();
 });
 
+//STORYS CONTAINER
 const container = document.getElementById("storys-conatiner");
 
 async function loadStories() {
@@ -193,6 +196,7 @@ async function loadStories() {
 
   const snapshot = await getDocs(storiesQuery);
 
+  //stories массив их объектов
   const stories = snapshot.docs.map((doc) => {
     return {
       id: doc.id,
@@ -200,6 +204,7 @@ async function loadStories() {
     };
   });
 
+  //HERE WE START TO FILL CONTAINER by JOIN in string all from array one by one
   container.innerHTML = stories
     .map((story) => {
       const createdAt = story.createdAt
@@ -255,29 +260,19 @@ listenToAll.addEventListener("click", () => {
     lastButton = null;
   }
 
-  // if (isPlayingAll) {
-  //   isPlayingAll = false;
-  //   window.speechSynthesis.cancel();
-  //   clearTimeout(timeoutId);
-  //   listenToAll.innerHTML = playAllIcon;
-  //   return;
-  // }
+  if (isPlayingAll) {
+    isPlayingAll = false;
+    window.speechSynthesis.cancel();
+    clearTimeout(timeoutId);
+    listenToAll.innerHTML = playAllIcon;
 
-if (isPlayingAll) {
-  isPlayingAll = false;
-  window.speechSynthesis.cancel();
-  clearTimeout(timeoutId);
-  listenToAll.innerHTML = playAllIcon;
+    document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
+      child.style.background = "";
+      child.style.color = "";
+    });
 
-  document.querySelectorAll("#storys-conatiner > *").forEach(child => {
-    child.style.background = "";
-    child.style.color = "";
-  });
-
-  return;
-}
-
-
+    return;
+  }
 
   isPlayingAll = true;
   window.speechSynthesis.cancel();
@@ -285,53 +280,47 @@ if (isPlayingAll) {
 
   let i = 0;
 
-  
-	
+  function speakNext() {
+    if (!isPlayingAll) return;
 
-	function speakNext() {
-  if (!isPlayingAll) return;
+    const allChildren = document.querySelectorAll("#storys-conatiner > *");
 
-  const allChildren = document.querySelectorAll("#storys-conatiner > *");
+    allChildren.forEach((child) => {
+      child.style.background = "";
+      child.style.color = "";
+    });
 
-  allChildren.forEach(child => {
-    child.style.background = "";
-    child.style.color = "";
-  });
+    if (i >= contentForAllPlay.length) {
+      isPlayingAll = false;
+      listenToAll.innerHTML = playAllIcon;
+      return;
+    }
 
-  if (i >= contentForAllPlay.length) {
-    isPlayingAll = false;
-    listenToAll.innerHTML = playAllIcon;
-    return;
+    const currentStory = allChildren[i * 2];
+
+    if (currentStory) {
+      // currentStory.style.background = "#D3E3FD";
+      currentStory.style.background = "#EAF0F9";
+      // currentStory.style.background = "#F4EAFE";
+      // currentStory.style.background = "#EAF2FE";
+      // currentStory.style.background = "#E5F3FF";
+      // currentStory.style.color = "black";
+    }
+
+    const msg = new SpeechSynthesisUtterance(contentForAllPlay[i]);
+    msg.lang = "fr-FR";
+    msg.rate = 0.8;
+
+    msg.onend = () => {
+      i++;
+
+      timeoutId = setTimeout(() => {
+        speakNext();
+      }, 2000);
+    };
+
+    window.speechSynthesis.speak(msg);
   }
-
-  const currentStory = allChildren[i * 2];
-
-  if (currentStory) {
-    // currentStory.style.background = "#D3E3FD";
-    currentStory.style.background = "#EAF0F9";
-    // currentStory.style.background = "#F4EAFE";
-    // currentStory.style.background = "#EAF2FE";
-    // currentStory.style.background = "#E5F3FF";
-    currentStory.style.color = "black";
-  }
-
-  const msg = new SpeechSynthesisUtterance(contentForAllPlay[i]);
-  msg.lang = "fr-FR";
-  msg.rate = 0.8;
-
-  msg.onend = () => {
-    i++;
-
-    timeoutId = setTimeout(() => {
-      speakNext();
-    }, 2000);
-  };
-
-  window.speechSynthesis.speak(msg);
-}
-
-  //   window.speechSynthesis.speak(msg);
-  // }
 
   speakNext();
 });
@@ -371,7 +360,14 @@ document.addEventListener("click", (e) => {
   }
 
   if (e.target.closest(".play-button")) {
-    isPlayingAll = false;
+		isPlayingAll = false;
+		
+  document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
+      child.style.background = "";
+      child.style.color = "";
+    });
+
+
     clearTimeout(timeoutId);
 
     window.speechSynthesis.cancel();
@@ -381,14 +377,24 @@ document.addEventListener("click", (e) => {
     const button = e.target.closest(".play-button");
     const currentStory = button.dataset.story;
 
-    if (lastButton && lastButton !== button) {
+    const storyElement = button.closest(".story");
+    storyElement.style.background = "#EAF0F9";
+
+		if (lastButton && lastButton !== button) {
+			
+			const lastStoryElement = lastButton.closest(".story");
+			lastStoryElement.style.background = "transparent";
+
+
       lastButton.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16">
         <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
       </svg>
     `;
 
-      lastButton.dataset.state = "play";
+			lastButton.dataset.state = "play";
+			
+		
     }
 
     lastButton = button;
@@ -412,6 +418,9 @@ modalWindowDeleteButtonNo.addEventListener("click", () => {
 });
 
 function sound(text, button) {
+	const storyElement = button.closest(".story");
+
+
   if (button.dataset.state === "stop") {
     window.speechSynthesis.cancel();
 
@@ -420,7 +429,9 @@ function sound(text, button) {
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
   </svg>
 `;
-    button.dataset.state = "play";
+		button.dataset.state = "play";
+		
+    storyElement.style.background = "transparent";
 
     lastButton = null;
     return;
@@ -449,8 +460,10 @@ function sound(text, button) {
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
   </svg>
 `;
-    button.dataset.state = "play";
-
+		button.dataset.state = "play";
+		
+		storyElement.style.background = "transparent";
+		
     lastButton = null;
   };
 
