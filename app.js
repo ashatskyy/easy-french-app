@@ -234,6 +234,7 @@ contentForAllPlay.length = 0;
             class="modal-window-delete-story-call-button"
             data-id="${story.id}"
             data-created-at="${createdAt}"
+						 data-story="${escapeHtml(story.content)}"
           >
             &times;
           </button>
@@ -362,11 +363,14 @@ document.addEventListener("click", (e) => {
 
     currentStoryId = e.target.dataset.id;
 
-    const storyCreatedAt = e.target.dataset.createdAt;
+		const storyCreatedAt = e.target.dataset.createdAt;
+		
+		const storyItself = e.target.dataset.story;
 
+console.log(storyItself);
     modalWindowDeleteMessage.innerHTML = `
-      Do you want to delete Story created at <br><br>
-      <b>${formatGreenwich(storyCreatedAt)}</b>?
+      Voulez-vous supprimer<br><br>
+      <b>${storyItself}</b>?
     `;
   }
 
