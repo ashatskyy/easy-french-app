@@ -60,6 +60,9 @@ let isPlayingAll = false;
 let timeoutId = null;
 
 
+let buttonInCyclePlayingNow = null;
+
+
 const playIcon = `
   <svg width="16" height="16" viewBox="0 0 16 16">
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
@@ -147,10 +150,10 @@ function escapeHtml(text) {
 
 //here we use story.content
 function addPlayButton(content) {
-	const safeContent = escapeHtml(content);
-	
-	// contentForAllPlay.push(content);
-	
+  const safeContent = escapeHtml(content);
+
+  // contentForAllPlay.push(content);
+
   const playButton = `
     <button class="play-button" data-story="${safeContent}" data-state="play">
   <svg width="16" height="16" viewBox="0 0 16 16">
@@ -203,9 +206,6 @@ storyForm.addEventListener("submit", async (e) => {
 });
 
 async function loadStories() {
-
-
-	
   const storiesQuery = query(
     collection(db, "users", currentUser, "stories"),
     orderBy("createdAt", "desc"),
@@ -248,10 +248,6 @@ async function loadStories() {
     .join("");
 }
 
-
-
-
-
 listenToAll.innerHTML = playIcon;
 
 function turnStoryButtonToPlay(button) {
@@ -261,18 +257,13 @@ function turnStoryButtonToPlay(button) {
   button.dataset.state = "play";
 }
 
-
-
 listenToAll.addEventListener("click", () => {
-
-
-
   // turn off previous played story button OK
   if (lastButton) {
     turnStoryButtonToPlay(lastButton);
     lastButton = null;
-	}
-	
+  }
+
   //here we turn off PlayAll but itself
   if (isPlayingAll) {
     isPlayingAll = false;
@@ -299,7 +290,12 @@ listenToAll.addEventListener("click", () => {
   window.speechSynthesis.cancel();
   listenToAll.innerHTML = stopIcon;
 
-  let i = 0;
+	let i = 0;
+	
+
+
+
+
 
   function speakNext() {
     if (!isPlayingAll) return;
@@ -311,16 +307,14 @@ listenToAll.addEventListener("click", () => {
       child.style.color = "";
     });
 
-
     if (i >= document.querySelectorAll("#storys-conatiner .story").length) {
       isPlayingAll = false;
       listenToAll.innerHTML = playIcon;
       return;
-		}
-		
-		
-const stories = document.querySelectorAll("#storys-conatiner .story");
-const currentStory = stories[i];
+    }
+
+    const stories = document.querySelectorAll("#storys-conatiner .story");
+    const currentStory = stories[i];
 
     const buttonInCycle = currentStory.querySelector(".play-button");
 
@@ -337,17 +331,21 @@ const currentStory = stories[i];
 		}
 		
 
-
-console.log(document
-  .querySelectorAll("#storys-conatiner .story")[i]
-  .querySelector(".play-button")
-  .dataset.story);
-
+		// console.log(document
+    //     .querySelectorAll("#storys-conatiner .story")
+    //     [i].querySelector(".play-button")
+		// );
 		
-    const msg = new SpeechSynthesisUtterance(document
-  .querySelectorAll("#storys-conatiner .story")[i]
-  .querySelector(".play-button")
-  .dataset.story);
+		buttonInCyclePlayingNow = document
+			.querySelectorAll("#storys-conatiner .story")
+		[i].querySelector(".play-button");
+    
+
+    const msg = new SpeechSynthesisUtterance(
+      document
+        .querySelectorAll("#storys-conatiner .story")
+        [i].querySelector(".play-button").dataset.story,
+    );
     msg.lang = "fr-FR";
     msg.rate = 0.8;
 
@@ -368,6 +366,8 @@ console.log(document
 
   speakNext();
 });
+
+
 
 
 
@@ -395,12 +395,10 @@ function trimStory(text) {
 
   let result = trimmed + "...";
 
-
   result = result.replace(/\.{4,}$/, "...");
 
   return result;
 }
-
 
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("modal-window-delete-story-call-button")) {
@@ -408,42 +406,54 @@ document.addEventListener("click", (e) => {
 
     currentStoryId = e.target.dataset.id;
 
-		const storyCreatedAt = e.target.dataset.createdAt;
-		
-		const storyItself = e.target.dataset.story;
+    const storyCreatedAt = e.target.dataset.createdAt;
 
+    const storyItself = e.target.dataset.story;
 
     modalWindowDeleteMessage.innerHTML = `
       Voulez-vous supprimer<br><br>
       <b>${trimStory(storyItself)}</b>&nbsp?
     `;
-	}
-	
+  }
 
-if (e.target.closest(".play-button")) {
-    isPlayingAll = false;
+
+
+
+	if (e.target.closest(".play-button")) {
+		
+		if (isPlayingAll&&buttonInCyclePlayingNow) {
+			buttonInCyclePlayingNow.innerHTML = playIcon;
+			buttonInCyclePlayingNow.dataset.state = "play";
+			window.speechSynthesis.cancel();
+		}
+		isPlayingAll = false;
+
+
+console.log(buttonInCyclePlayingNow);
+
 
     document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
       if (child.querySelector(".play-button")) {
         child.style.background = "";
-        child.style.color = "";
-      }
-    });
+				child.style.color = "";
+			}
+		});
+		
+
+
+
 
     clearTimeout(timeoutId);
-		const button = e.target.closest(".play-button");
-		
 
-		const currentStory = button.dataset.story;
-		
+    const button = e.target.closest(".play-button");
+    const currentStory = button.dataset.story;
+
     const storyElement = button.closest(".story");
     storyElement.style.background = "#EAF0F9";
-
 
     window.speechSynthesis.cancel();
 
     listenToAll.innerHTML = playIcon;
-
 
     if (lastButton && lastButton !== button) {
       const lastStoryElement = lastButton.closest(".story");
@@ -460,9 +470,6 @@ if (e.target.closest(".play-button")) {
   }
 });
 
-
-
-
 modalWindowDeleteButtonYes.addEventListener("click", async () => {
   if (!currentStoryId) return;
 
@@ -476,10 +483,6 @@ modalWindowDeleteButtonNo.addEventListener("click", () => {
   overlayBackgroundForDeleteStory.style.display = "none";
   currentStoryId = null;
 });
-
-
-
-
 
 function sound(text, button) {
   const storyElement = button.closest(".story");
