@@ -59,7 +59,6 @@ let lastButton = null;
 let isPlayingAll = false;
 let timeoutId = null;
 
-const contentForAllPlay = [];
 
 const playIcon = `
   <svg width="16" height="16" viewBox="0 0 16 16">
@@ -148,8 +147,10 @@ function escapeHtml(text) {
 
 //here we use story.content
 function addPlayButton(content) {
-  const safeContent = escapeHtml(content);
-  contentForAllPlay.push(content);
+	const safeContent = escapeHtml(content);
+	
+	// contentForAllPlay.push(content);
+	
   const playButton = `
     <button class="play-button" data-story="${safeContent}" data-state="play">
   <svg width="16" height="16" viewBox="0 0 16 16">
@@ -202,7 +203,9 @@ storyForm.addEventListener("submit", async (e) => {
 });
 
 async function loadStories() {
-contentForAllPlay.length = 0;
+
+
+	
   const storiesQuery = query(
     collection(db, "users", currentUser, "stories"),
     orderBy("createdAt", "desc"),
@@ -245,6 +248,10 @@ contentForAllPlay.length = 0;
     .join("");
 }
 
+
+
+
+
 listenToAll.innerHTML = playIcon;
 
 function turnStoryButtonToPlay(button) {
@@ -254,12 +261,18 @@ function turnStoryButtonToPlay(button) {
   button.dataset.state = "play";
 }
 
+
+
 listenToAll.addEventListener("click", () => {
+
+
+
   // turn off previous played story button OK
   if (lastButton) {
     turnStoryButtonToPlay(lastButton);
     lastButton = null;
-  }
+	}
+	
   //here we turn off PlayAll but itself
   if (isPlayingAll) {
     isPlayingAll = false;
@@ -298,13 +311,17 @@ listenToAll.addEventListener("click", () => {
       child.style.color = "";
     });
 
-    if (i >= contentForAllPlay.length) {
+
+    if (i >= document.querySelectorAll("#storys-conatiner .story").length) {
       isPlayingAll = false;
       listenToAll.innerHTML = playIcon;
       return;
-    }
+		}
+		
+		
+const stories = document.querySelectorAll("#storys-conatiner .story");
+const currentStory = stories[i];
 
-    const currentStory = allChildren[i * 2];
     const buttonInCycle = currentStory.querySelector(".play-button");
 
     if (currentStory) {
@@ -317,9 +334,20 @@ listenToAll.addEventListener("click", () => {
   `;
 
       buttonInCycle.dataset.state = "stop";
-    }
+		}
+		
 
-    const msg = new SpeechSynthesisUtterance(contentForAllPlay[i]);
+
+console.log(document
+  .querySelectorAll("#storys-conatiner .story")[i]
+  .querySelector(".play-button")
+  .dataset.story);
+
+		
+    const msg = new SpeechSynthesisUtterance(document
+  .querySelectorAll("#storys-conatiner .story")[i]
+  .querySelector(".play-button")
+  .dataset.story);
     msg.lang = "fr-FR";
     msg.rate = 0.8;
 
@@ -340,6 +368,9 @@ listenToAll.addEventListener("click", () => {
 
   speakNext();
 });
+
+
+
 
 const overlayBackgroundForDeleteStory = document.querySelector(
   ".overlay-background-for-delete-story-mode",
@@ -389,8 +420,6 @@ document.addEventListener("click", (e) => {
 	}
 	
 
-
-
 if (e.target.closest(".play-button")) {
     isPlayingAll = false;
 
@@ -410,99 +439,10 @@ if (e.target.closest(".play-button")) {
     const storyElement = button.closest(".story");
     storyElement.style.background = "#EAF0F9";
 
-    // buttonInCycleGlobe.innerHTML= `
-    // <svg width="16" height="16" viewBox="0 0 16 16">
-    // <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
-    // </svg>
-    // `;
-    // buttonInCycleGlobe.dataset.state = "play";
-
-    // console.log(buttonInCycleGlobe);
 
     window.speechSynthesis.cancel();
 
     listenToAll.innerHTML = playIcon;
-
-    // console.log(document.querySelector("#storys-conatiner"));
-
-
-    // console.log(button);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // const button = e.target.closest(".play-button");
-
-  // if (button) {
-  //   isPlayingAll = false;
-
-  //   document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
-  //     child.style.background = "";
-  //     child.style.color = "";
-
-  //     const playButton = child.querySelector(".play-button");
-
-  //     if (playButton) {
-  //       playButton.innerHTML = playIcon;
-  //       playButton.dataset.state = "play";
-  //     }
-  //   });
-
-  //   clearTimeout(timeoutId);
-
-  //   window.speechSynthesis.cancel();
-
-	// 	listenToAll.innerHTML = playIcon;
-		
-
-
-  //   const currentStory = button.dataset.story;
-
-  //   const storyElement = button.closest(".story");
-	// 	storyElement.style.background = "#EAF0F9";
-		
 
 
     if (lastButton && lastButton !== button) {
