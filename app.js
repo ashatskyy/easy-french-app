@@ -49,7 +49,7 @@ const loginError = document.querySelector("#loginError");
 const overlayBackgroundForLogin = document.querySelector(
   ".overlay-background-for-login",
 );
-
+const container = document.getElementById("storys-conatiner");
 const listenToAll = document.getElementById("listen-to-all-button");
 
 let currentUser = null;
@@ -58,6 +58,20 @@ let lastButton = null;
 
 let isPlayingAll = false;
 let timeoutId = null;
+
+const contentForAllPlay = [];
+
+const playIcon = `
+  <svg width="16" height="16" viewBox="0 0 16 16">
+    <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
+  </svg>
+`;
+
+const stopIcon = `
+  <svg width="16" height="16" viewBox="0 0 16 16">
+    <rect x="4" y="4" width="8" height="8" fill="currentColor"></rect>
+  </svg>
+`;
 
 //FORM HANDLING
 loginForm.addEventListener("submit", async (e) => {
@@ -132,8 +146,6 @@ function escapeHtml(text) {
     .replaceAll(">", "&gt;");
 }
 
-const contentForAllPlay = [];
-
 //here we use story.content
 function addPlayButton(content) {
   const safeContent = escapeHtml(content);
@@ -189,10 +201,8 @@ storyForm.addEventListener("submit", async (e) => {
   window.location.reload();
 });
 
-//STORYS CONTAINER
-const container = document.getElementById("storys-conatiner");
-
 async function loadStories() {
+contentForAllPlay.length = 0;
   const storiesQuery = query(
     collection(db, "users", currentUser, "stories"),
     orderBy("createdAt", "desc"),
@@ -217,7 +227,7 @@ async function loadStories() {
 
       return `
         <p class="story">
-          <b>${createdAt ? formatGreenwich(createdAt) : ""}</b> - 
+     
           ${addPlayButton(story.content)}
 
           <button
@@ -234,24 +244,12 @@ async function loadStories() {
     .join("");
 }
 
-const playAllIcon = `
-  <svg width="16" height="16" viewBox="0 0 16 16">
-    <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
-  </svg>
-`;
-
-const stopIcon = `
-  <svg width="16" height="16" viewBox="0 0 16 16">
-    <rect x="4" y="4" width="8" height="8" fill="currentColor"></rect>
-  </svg>
-`;
-
-listenToAll.innerHTML = playAllIcon;
+listenToAll.innerHTML = playIcon;
 
 function turnStoryButtonToPlay(button) {
   if (!button) return;
 
-  button.innerHTML = playAllIcon;
+  button.innerHTML = playIcon;
   button.dataset.state = "play";
 }
 
@@ -266,7 +264,7 @@ listenToAll.addEventListener("click", () => {
     isPlayingAll = false;
     window.speechSynthesis.cancel();
     clearTimeout(timeoutId);
-    listenToAll.innerHTML = playAllIcon;
+    listenToAll.innerHTML = playIcon;
 
     //here we can turn off story stop buttons which are in the cycle
     document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
@@ -274,11 +272,7 @@ listenToAll.addEventListener("click", () => {
       child.style.color = "";
 
       if (child.querySelector(".play-button")) {
-        child.querySelector(".play-button").innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 16 16">
-          <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
-        </svg>
-      `;
+        child.querySelector(".play-button").innerHTML = playIcon;
 
         child.querySelector(".play-button").dataset.state = "play";
       }
@@ -305,7 +299,7 @@ listenToAll.addEventListener("click", () => {
 
     if (i >= contentForAllPlay.length) {
       isPlayingAll = false;
-      listenToAll.innerHTML = playAllIcon;
+      listenToAll.innerHTML = playIcon;
       return;
     }
 
@@ -332,11 +326,7 @@ listenToAll.addEventListener("click", () => {
       i++;
 
       timeoutId = setTimeout(() => {
-        buttonInCycle.innerHTML = `
-			<svg width="16" height="16" viewBox="0 0 16 16">
-				<polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
-			</svg>
-		`;
+        buttonInCycle.innerHTML = playIcon;
 
         buttonInCycle.dataset.state = "play";
 
@@ -380,21 +370,29 @@ document.addEventListener("click", (e) => {
     `;
   }
 
-  if (e.target.closest(".play-button")) {
+  const button = e.target.closest(".play-button");
+
+  if (button) {
     isPlayingAll = false;
 
     document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
       child.style.background = "";
       child.style.color = "";
+
+      const playButton = child.querySelector(".play-button");
+
+      if (playButton) {
+        playButton.innerHTML = playIcon;
+        playButton.dataset.state = "play";
+      }
     });
 
     clearTimeout(timeoutId);
 
     window.speechSynthesis.cancel();
 
-    listenToAll.innerHTML = playAllIcon;
+    listenToAll.innerHTML = playIcon;
 
-    const button = e.target.closest(".play-button");
     const currentStory = button.dataset.story;
 
     const storyElement = button.closest(".story");
@@ -404,11 +402,7 @@ document.addEventListener("click", (e) => {
       const lastStoryElement = lastButton.closest(".story");
       lastStoryElement.style.background = "transparent";
 
-      lastButton.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 16 16">
-        <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
-      </svg>
-    `;
+      lastButton.innerHTML = playIcon;
 
       lastButton.dataset.state = "play";
     }
@@ -439,11 +433,7 @@ function sound(text, button) {
   if (button.dataset.state === "stop") {
     window.speechSynthesis.cancel();
 
-    button.innerHTML = `
-  <svg width="16" height="16" viewBox="0 0 16 16">
-    <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
-  </svg>
-`;
+    button.innerHTML = playIcon;
     button.dataset.state = "play";
 
     storyElement.style.background = "transparent";
@@ -470,11 +460,7 @@ function sound(text, button) {
   };
 
   msg.onend = () => {
-    button.innerHTML = `
-  <svg width="16" height="16" viewBox="0 0 16 16">
-    <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
-  </svg>
-`;
+    button.innerHTML = playIcon;
     button.dataset.state = "play";
 
     storyElement.style.background = "transparent";
