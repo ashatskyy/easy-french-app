@@ -370,7 +370,7 @@ document.addEventListener("click", (e) => {
 console.log(storyItself);
     modalWindowDeleteMessage.innerHTML = `
       Voulez-vous supprimer<br><br>
-      <b>${storyItself}</b>?
+      <b>${storyItself.length<=49? storyItself: storyItself.slice(0, 50)+"..."}</b>&nbsp?
     `;
   }
 
