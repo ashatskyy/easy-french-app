@@ -412,10 +412,11 @@ listenToAll.addEventListener("click", () => {
       child.style.color = "";
     });
 
-    if (i >= document.querySelectorAll("#storys-conatiner .story").length) {
-      isPlayingAll = false;
-      listenToAll.innerHTML = playIcon;
-      return;
+		if (i >= document.querySelectorAll("#storys-conatiner .story").length) {
+			i = 0;
+      // isPlayingAll = false;
+      // listenToAll.innerHTML = playIcon;
+      // return;
     }
 
     const stories = document.querySelectorAll("#storys-conatiner .story");
@@ -448,7 +449,8 @@ listenToAll.addEventListener("click", () => {
       document
         .querySelectorAll("#storys-conatiner .story")
         [i].querySelector(".play-button").dataset.story,
-    );
+		);
+		
     msg.lang = "fr-FR";
     msg.rate = 0.8;
 
