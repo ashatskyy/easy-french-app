@@ -381,40 +381,129 @@ document.addEventListener("click", (e) => {
 		
 		const storyItself = e.target.dataset.story;
 
-console.log(storyItself);
+
     modalWindowDeleteMessage.innerHTML = `
       Voulez-vous supprimer<br><br>
       <b>${trimStory(storyItself)}</b>&nbsp?
     `;
-  }
+	}
+	
 
-  const button = e.target.closest(".play-button");
 
-  if (button) {
+
+if (e.target.closest(".play-button")) {
     isPlayingAll = false;
 
     document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
-      child.style.background = "";
-      child.style.color = "";
-
-      const playButton = child.querySelector(".play-button");
-
-      if (playButton) {
-        playButton.innerHTML = playIcon;
-        playButton.dataset.state = "play";
+      if (child.querySelector(".play-button")) {
+        child.style.background = "";
+        child.style.color = "";
       }
     });
 
     clearTimeout(timeoutId);
+		const button = e.target.closest(".play-button");
+		
+
+		const currentStory = button.dataset.story;
+		
+    const storyElement = button.closest(".story");
+    storyElement.style.background = "#EAF0F9";
+
+    // buttonInCycleGlobe.innerHTML= `
+    // <svg width="16" height="16" viewBox="0 0 16 16">
+    // <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
+    // </svg>
+    // `;
+    // buttonInCycleGlobe.dataset.state = "play";
+
+    // console.log(buttonInCycleGlobe);
 
     window.speechSynthesis.cancel();
 
     listenToAll.innerHTML = playIcon;
 
-    const currentStory = button.dataset.story;
+    // console.log(document.querySelector("#storys-conatiner"));
 
-    const storyElement = button.closest(".story");
-    storyElement.style.background = "#EAF0F9";
+
+    // console.log(button);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // const button = e.target.closest(".play-button");
+
+  // if (button) {
+  //   isPlayingAll = false;
+
+  //   document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
+  //     child.style.background = "";
+  //     child.style.color = "";
+
+  //     const playButton = child.querySelector(".play-button");
+
+  //     if (playButton) {
+  //       playButton.innerHTML = playIcon;
+  //       playButton.dataset.state = "play";
+  //     }
+  //   });
+
+  //   clearTimeout(timeoutId);
+
+  //   window.speechSynthesis.cancel();
+
+	// 	listenToAll.innerHTML = playIcon;
+		
+
+
+  //   const currentStory = button.dataset.story;
+
+  //   const storyElement = button.closest(".story");
+	// 	storyElement.style.background = "#EAF0F9";
+		
+
 
     if (lastButton && lastButton !== button) {
       const lastStoryElement = lastButton.closest(".story");
@@ -431,6 +520,9 @@ console.log(storyItself);
   }
 });
 
+
+
+
 modalWindowDeleteButtonYes.addEventListener("click", async () => {
   if (!currentStoryId) return;
 
@@ -444,6 +536,10 @@ modalWindowDeleteButtonNo.addEventListener("click", () => {
   overlayBackgroundForDeleteStory.style.display = "none";
   currentStoryId = null;
 });
+
+
+
+
 
 function sound(text, button) {
   const storyElement = button.closest(".story");
