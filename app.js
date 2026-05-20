@@ -41,19 +41,23 @@ await setPersistence(auth, browserLocalPersistence);
 
 const loginPage = document.querySelector("#loginPage");
 const appPage = document.querySelector("#appPage");
-
 const loginForm = document.querySelector("#loginForm");
 const emailInput = document.querySelector("#emailInput");
 const passwordInput = document.querySelector("#passwordInput");
 const loginError = document.querySelector("#loginError");
-
-let currentUser = null;
 
 const overlayBackgroundForLogin = document.querySelector(
   ".overlay-background-for-login",
 );
 
 const listenToAll = document.getElementById("listen-to-all-button");
+
+let currentUser = null;
+let currentStoryId = null;
+let lastButton = null;
+
+let isPlayingAll = false;
+let timeoutId = null;
 
 //FORM HANDLING
 loginForm.addEventListener("submit", async (e) => {
@@ -244,9 +248,6 @@ const stopIcon = `
 
 listenToAll.innerHTML = playAllIcon;
 
-let isPlayingAll = false;
-let timeoutId = null;
-
 function turnStoryButtonToPlay(button) {
   if (!button) return;
 
@@ -255,30 +256,32 @@ function turnStoryButtonToPlay(button) {
 }
 
 listenToAll.addEventListener("click", () => {
-  // tern off previous played button
+  // turn off previous played story button OK
   if (lastButton) {
     turnStoryButtonToPlay(lastButton);
     lastButton = null;
   }
-
-  //here we can tern off story stop buttons*********
+  //here we turn off PlayAll but itself
   if (isPlayingAll) {
     isPlayingAll = false;
     window.speechSynthesis.cancel();
     clearTimeout(timeoutId);
     listenToAll.innerHTML = playAllIcon;
 
+    //here we can turn off story stop buttons which are in the cycle
     document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
       child.style.background = "";
       child.style.color = "";
 
-      // 			child.querySelector(".play-button").innerHTML= `
-      //   <svg width="16" height="16" viewBox="0 0 16 16">
-      //     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
-      //   </svg>
-      // `;
+      if (child.querySelector(".play-button")) {
+        child.querySelector(".play-button").innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 16 16">
+          <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
+        </svg>
+      `;
 
-      // 			child.querySelector(".play-button").dataset.state = "play";
+        child.querySelector(".play-button").dataset.state = "play";
+      }
     });
 
     return;
@@ -362,10 +365,6 @@ const modalWindowDeleteButtonYes = document.querySelector(
 const modalWindowDeleteButtonNo = document.querySelector(
   ".modal-window-delete-button-no",
 );
-
-let currentStoryId = null;
-
-let lastButton = null;
 
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("modal-window-delete-story-call-button")) {
