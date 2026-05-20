@@ -357,6 +357,20 @@ const modalWindowDeleteButtonNo = document.querySelector(
   ".modal-window-delete-button-no",
 );
 
+function trimStory(text) {
+  if (text.length <= 49) return text;
+
+  let trimmed = text.slice(0, 50).replace(/\s+$/, "");
+
+  let result = trimmed + "...";
+
+
+  result = result.replace(/\.{4,}$/, "...");
+
+  return result;
+}
+
+
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("modal-window-delete-story-call-button")) {
     overlayBackgroundForDeleteStory.style.display = "flex";
@@ -370,7 +384,7 @@ document.addEventListener("click", (e) => {
 console.log(storyItself);
     modalWindowDeleteMessage.innerHTML = `
       Voulez-vous supprimer<br><br>
-      <b>${storyItself.length<=49? storyItself: storyItself.slice(0, 50)+"..."}</b>&nbsp?
+      <b>${trimStory(storyItself)}</b>&nbsp?
     `;
   }
 
