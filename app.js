@@ -59,9 +59,7 @@ let lastButton = null;
 let isPlayingAll = false;
 let timeoutId = null;
 
-
 let buttonInCyclePlayingNow = null;
-
 
 const playIcon = `
   <svg width="16" height="16" viewBox="0 0 16 16">
@@ -191,6 +189,28 @@ modalWindowWriteCloseButton.addEventListener("click", function () {
 
 const storyForm = document.querySelector("#storyForm");
 
+
+
+// storyForm.addEventListener("submit", async (e) => {
+//   e.preventDefault();
+
+//   if (!textarea.value.trim()) return;
+
+//   await addDoc(collection(db, "users", currentUser, "stories"), {
+//     content: textarea.value,
+//     createdAt: serverTimestamp(),
+//   });
+
+//   textarea.value = "";
+//   window.location.reload();
+// });
+
+
+
+
+
+
+
 storyForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -202,10 +222,80 @@ storyForm.addEventListener("submit", async (e) => {
   });
 
   textarea.value = "";
-  window.location.reload();
+  textarea.style.height = "auto"; // Reset textarea height expansion
+  modalWindowWrite.style.display = "none"; // Close modal cleanly
+
+  // Dynamic refresh: pulls from Firestore and updates innerHTML instantly
+  await loadStories(); 
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+// async function loadStories() {
+//   const storiesQuery = query(
+//     collection(db, "users", currentUser, "stories"),
+//     orderBy("createdAt", "desc"),
+//   );
+
+//   const snapshot = await getDocs(storiesQuery);
+
+//   //stories массив их объектов
+//   const stories = snapshot.docs.map((doc) => {
+//     return {
+//       id: doc.id,
+//       ...doc.data(),
+//     };
+//   });
+
+//   //HERE WE START TO FILL CONTAINER by JOIN in string all from array one by one
+//   container.innerHTML = stories
+//     .map((story) => {
+//       const createdAt = story.createdAt
+//         ? story.createdAt.toDate().toISOString()
+//         : "";
+
+//       return `
+//         <p class="story">
+     
+//           ${addPlayButton(story.content)}
+
+//           <button
+//             class="modal-window-delete-story-call-button"
+//             data-id="${story.id}"
+//             data-created-at="${createdAt}"
+// 						 data-story="${escapeHtml(story.content)}"
+//           >
+//             &times;
+//           </button>
+//         </p>
+//         <hr>
+//       `;
+//     })
+//     .join("");
+// }
+
+
+
 async function loadStories() {
+  // CRITICAL SAFETY CLEAR: Stop any active speech or timers running right now
+  window.speechSynthesis.cancel();
+  isPlayingAll = false;
+  if (timeoutId) clearTimeout(timeoutId);
+  listenToAll.innerHTML = playIcon;
+  lastButton = null;
+  buttonInCyclePlayingNow = null;
+
   const storiesQuery = query(
     collection(db, "users", currentUser, "stories"),
     orderBy("createdAt", "desc"),
@@ -213,7 +303,6 @@ async function loadStories() {
 
   const snapshot = await getDocs(storiesQuery);
 
-  //stories массив их объектов
   const stories = snapshot.docs.map((doc) => {
     return {
       id: doc.id,
@@ -221,7 +310,7 @@ async function loadStories() {
     };
   });
 
-  //HERE WE START TO FILL CONTAINER by JOIN in string all from array one by one
+  // Re-render HTML matching your updated format perfectly
   container.innerHTML = stories
     .map((story) => {
       const createdAt = story.createdAt
@@ -230,14 +319,13 @@ async function loadStories() {
 
       return `
         <p class="story">
-     
           ${addPlayButton(story.content)}
 
           <button
             class="modal-window-delete-story-call-button"
             data-id="${story.id}"
             data-created-at="${createdAt}"
-						 data-story="${escapeHtml(story.content)}"
+             data-story="${escapeHtml(story.content)}"
           >
             &times;
           </button>
@@ -247,6 +335,28 @@ async function loadStories() {
     })
     .join("");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 listenToAll.innerHTML = playIcon;
 
@@ -290,12 +400,7 @@ listenToAll.addEventListener("click", () => {
   window.speechSynthesis.cancel();
   listenToAll.innerHTML = stopIcon;
 
-	let i = 0;
-	
-
-
-
-
+  let i = 0;
 
   function speakNext() {
     if (!isPlayingAll) return;
@@ -328,18 +433,16 @@ listenToAll.addEventListener("click", () => {
   `;
 
       buttonInCycle.dataset.state = "stop";
-		}
-		
+    }
 
-		// console.log(document
+    // console.log(document
     //     .querySelectorAll("#storys-conatiner .story")
     //     [i].querySelector(".play-button")
-		// );
-		
-		buttonInCyclePlayingNow = document
-			.querySelectorAll("#storys-conatiner .story")
-		[i].querySelector(".play-button");
-    
+    // );
+
+    buttonInCyclePlayingNow = document
+      .querySelectorAll("#storys-conatiner .story")
+      [i].querySelector(".play-button");
 
     const msg = new SpeechSynthesisUtterance(
       document
@@ -366,11 +469,6 @@ listenToAll.addEventListener("click", () => {
 
   speakNext();
 });
-
-
-
-
-
 
 const overlayBackgroundForDeleteStory = document.querySelector(
   ".overlay-background-for-delete-story-mode",
@@ -416,32 +514,24 @@ document.addEventListener("click", (e) => {
     `;
   }
 
-
-
-
-	if (e.target.closest(".play-button")) {
-		
-		if (isPlayingAll&&buttonInCyclePlayingNow) {
-			buttonInCyclePlayingNow.innerHTML = playIcon;
-			buttonInCyclePlayingNow.dataset.state = "play";
+  if (e.target.closest(".play-button")) {
+    if (isPlayingAll && buttonInCyclePlayingNow) {
+      buttonInCyclePlayingNow.innerHTML = playIcon;
+      buttonInCyclePlayingNow.dataset.state = "play";
 			window.speechSynthesis.cancel();
-		}
-		isPlayingAll = false;
+			clearTimeout(timeoutId);
+    listenToAll.innerHTML = playIcon;
+    }
+    isPlayingAll = false;
 
-
-console.log(buttonInCyclePlayingNow);
-
+    console.log(buttonInCyclePlayingNow);
 
     document.querySelectorAll("#storys-conatiner > *").forEach((child) => {
       if (child.querySelector(".play-button")) {
         child.style.background = "";
-				child.style.color = "";
-			}
-		});
-		
-
-
-
+        child.style.color = "";
+      }
+    });
 
     clearTimeout(timeoutId);
 
@@ -470,14 +560,38 @@ console.log(buttonInCyclePlayingNow);
   }
 });
 
+// modalWindowDeleteButtonYes.addEventListener("click", async () => {
+//   if (!currentStoryId) return;
+
+//   await deleteDoc(doc(db, "users", currentUser, "stories", currentStoryId));
+
+//   overlayBackgroundForDeleteStory.style.display = "none";
+//   location.reload();
+// });
+
+
+
+
 modalWindowDeleteButtonYes.addEventListener("click", async () => {
   if (!currentStoryId) return;
 
   await deleteDoc(doc(db, "users", currentUser, "stories", currentStoryId));
 
   overlayBackgroundForDeleteStory.style.display = "none";
-  location.reload();
+  currentStoryId = null;
+
+  // Dynamic refresh: instantly reflects the deletion on screen
+  await loadStories(); 
 });
+
+
+
+
+
+
+
+
+
 
 modalWindowDeleteButtonNo.addEventListener("click", () => {
   overlayBackgroundForDeleteStory.style.display = "none";
