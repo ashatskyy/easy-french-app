@@ -15,6 +15,7 @@ body {
 .page{
 	margin: 0 auto;
   max-width: 760px;
+	/* border: 1px solid #000; */
 }
 
 h1,
@@ -158,9 +159,15 @@ textarea {
 
 .story {
   position: relative;
-  padding-right: 25px;
+  /* padding-right: 25px; */
 	line-height: 1.5;
 	margin: 0;
+
+	text-align: justify;
+
+	/* text-indent: 10px; */
+
+	border-radius: 10px;
 }
 
 .no-break {
@@ -187,6 +194,7 @@ textarea {
 	padding: 0;
 	margin: 0;
 	/* border: 1px solid #000; */
+	padding-right: 10px;
 	background-color: transparent;
 
 	-webkit-tap-highlight-color: transparent;
@@ -199,7 +207,8 @@ textarea {
 	width: 100%;
 	justify-content: flex-end;
 	margin: 0;
-	margin-right: 90px;
+	margin-right: 40px;
+	/* margin-right: 90px; */
 	/* margin: 0; */
 
 }
@@ -228,9 +237,12 @@ textarea {
 
 
 .modal-window-delete-story-call-button {
-  position: absolute;
+  /* position: absolute;
   top: 0;
-  right: 0;
+  right: 0; */
+
+	float: right;
+	margin-left: 10px;
 
   width: 20px;
   height: 20px;

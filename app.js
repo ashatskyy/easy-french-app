@@ -147,23 +147,36 @@ function escapeHtml(text) {
 }
 
 //here we use story.content
+// function addPlayButton(content) {
+//   const safeContent = escapeHtml(content);
+
+//   // contentForAllPlay.push(content);
+
+//   const playButton = `
+//     <button class="play-button" data-story="${safeContent}" data-state="play">
+//   <svg width="16" height="16" viewBox="0 0 16 16">
+//     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
+//   </svg>
+// </button>
+//   `;
+
+//   return safeContent.replace(
+//     /(\S+)\s*$/,
+//     `<span class="no-break">$1&nbsp;${playButton}</span>`,
+//   );
+// }
+
 function addPlayButton(content) {
   const safeContent = escapeHtml(content);
 
-  // contentForAllPlay.push(content);
-
   const playButton = `
-    <button class="play-button" data-story="${safeContent}" data-state="play">
+<button class="play-button" data-story="${safeContent}" data-state="play">
   <svg width="16" height="16" viewBox="0 0 16 16">
     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
   </svg>
-</button>
-  `;
+</button>`;
 
-  return safeContent.replace(
-    /(\S+)\s*$/,
-    `<span class="no-break">$1&nbsp;${playButton}</span>`,
-  );
+  return `${playButton}${safeContent}`;
 }
 
 const textarea = document.getElementById("textarea");
@@ -319,16 +332,16 @@ async function loadStories() {
 
       return `
         <p class="story">
-          ${addPlayButton(story.content)}
-
-          <button
-            class="modal-window-delete-story-call-button"
-            data-id="${story.id}"
-            data-created-at="${createdAt}"
-             data-story="${escapeHtml(story.content)}"
-          >
-            &times;
-          </button>
+				
+				<button
+				class="modal-window-delete-story-call-button"
+				data-id="${story.id}"
+				data-created-at="${createdAt}"
+				data-story="${escapeHtml(story.content)}"
+				>
+				&times;
+				</button>
+				${addPlayButton(story.content)}
         </p>
         <hr>
       `;
