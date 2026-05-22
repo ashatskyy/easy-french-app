@@ -49,8 +49,10 @@ const loginError = document.querySelector("#loginError");
 const overlayBackgroundForLogin = document.querySelector(
   ".overlay-background-for-login",
 );
+
 const container = document.getElementById("storys-conatiner");
 const listenToAll = document.getElementById("listen-to-all-button");
+const sendButton = document.getElementById("send-button");
 
 let currentUser = null;
 let currentStoryId = null;
@@ -193,16 +195,20 @@ const modalWindowWriteCloseButton = document.getElementById(
 );
 
 openModal.addEventListener("click", function () {
+  openModal.style.display = "none";
   modalWindowWrite.style.display = "block";
+});
+
+sendButton.addEventListener("click", function () {
+  openModal.style.display = "block";
 });
 
 modalWindowWriteCloseButton.addEventListener("click", function () {
   modalWindowWrite.style.display = "none";
+  openModal.style.display = "block";
 });
 
 const storyForm = document.querySelector("#storyForm");
-
-
 
 // storyForm.addEventListener("submit", async (e) => {
 //   e.preventDefault();
@@ -217,12 +223,6 @@ const storyForm = document.querySelector("#storyForm");
 //   textarea.value = "";
 //   window.location.reload();
 // });
-
-
-
-
-
-
 
 storyForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -239,21 +239,8 @@ storyForm.addEventListener("submit", async (e) => {
   modalWindowWrite.style.display = "none"; // Close modal cleanly
 
   // Dynamic refresh: pulls from Firestore and updates innerHTML instantly
-  await loadStories(); 
+  await loadStories();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // async function loadStories() {
 //   const storiesQuery = query(
@@ -280,7 +267,7 @@ storyForm.addEventListener("submit", async (e) => {
 
 //       return `
 //         <p class="story">
-     
+
 //           ${addPlayButton(story.content)}
 
 //           <button
@@ -297,8 +284,6 @@ storyForm.addEventListener("submit", async (e) => {
 //     })
 //     .join("");
 // }
-
-
 
 async function loadStories() {
   // CRITICAL SAFETY CLEAR: Stop any active speech or timers running right now
@@ -348,28 +333,6 @@ async function loadStories() {
     })
     .join("");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 listenToAll.innerHTML = playIcon;
 
@@ -425,8 +388,8 @@ listenToAll.addEventListener("click", () => {
       child.style.color = "";
     });
 
-		if (i >= document.querySelectorAll("#storys-conatiner .story").length) {
-			i = 0;
+    if (i >= document.querySelectorAll("#storys-conatiner .story").length) {
+      i = 0;
       // isPlayingAll = false;
       // listenToAll.innerHTML = playIcon;
       // return;
@@ -462,8 +425,8 @@ listenToAll.addEventListener("click", () => {
       document
         .querySelectorAll("#storys-conatiner .story")
         [i].querySelector(".play-button").dataset.story,
-		);
-		
+    );
+
     msg.lang = "fr-FR";
     msg.rate = 0.8;
 
@@ -533,9 +496,9 @@ document.addEventListener("click", (e) => {
     if (isPlayingAll && buttonInCyclePlayingNow) {
       buttonInCyclePlayingNow.innerHTML = playIcon;
       buttonInCyclePlayingNow.dataset.state = "play";
-			window.speechSynthesis.cancel();
-			clearTimeout(timeoutId);
-    listenToAll.innerHTML = playIcon;
+      window.speechSynthesis.cancel();
+      clearTimeout(timeoutId);
+      listenToAll.innerHTML = playIcon;
     }
     isPlayingAll = false;
 
@@ -584,9 +547,6 @@ document.addEventListener("click", (e) => {
 //   location.reload();
 // });
 
-
-
-
 modalWindowDeleteButtonYes.addEventListener("click", async () => {
   if (!currentStoryId) return;
 
@@ -596,17 +556,8 @@ modalWindowDeleteButtonYes.addEventListener("click", async () => {
   currentStoryId = null;
 
   // Dynamic refresh: instantly reflects the deletion on screen
-  await loadStories(); 
+  await loadStories();
 });
-
-
-
-
-
-
-
-
-
 
 modalWindowDeleteButtonNo.addEventListener("click", () => {
   overlayBackgroundForDeleteStory.style.display = "none";
