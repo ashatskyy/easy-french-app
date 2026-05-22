@@ -68,8 +68,11 @@ header {
 } */
 
 .modal-window-write-close-button {
+	position: absolute;
   margin-right: 20px;
   font-size: 24px;
+	top:34px;
+	right: 5px;
 }
 
 main {
@@ -88,11 +91,12 @@ main {
 	/* border: 1px solid #000; */
 }
 
-.modal-window-write-close-button-container {
+/* .modal-window-write-close-button-container {
   display: flex;
   justify-content: right;
-  margin-bottom: 40px;
-}
+
+
+} */
 
 .modal-window-write-close-button,
 .modal-window-delete-story-call-button,
@@ -111,11 +115,15 @@ form {
 	/* border: 1px solid #000; */
 }
 
+.text-area-conatiner{
+	position: relative;
+}
+
 textarea {
   width: 100%;
   padding-left: 50px;
-  padding-right: 20px;
-  min-height: 40px;
+  padding-right: 52px;
+  min-height: 80px;
   font-size: 16px;
   line-height: 26px;
   box-sizing: border-box;
@@ -128,6 +136,8 @@ textarea {
   overflow-anchor: none;
 
 	/* border: 1px solid #000; */
+
+	  padding-top: 40px;
 }
 
 
@@ -148,7 +158,7 @@ textarea {
 }
 
 .send-button {
-  /* margin-top: 40px; */
+  margin-top: 20px;
   font-size: 17px;
   width: 95px;
 }
@@ -221,7 +231,7 @@ textarea {
 	justify-content: flex-end;
 	margin: 0;
 	margin-right: 40px;
-	padding-top: 20px;
+	padding-top: 5px;
 	/* margin-right: 90px; */
 	/* margin-top: 90px; */
 	/* margin: 0; */
