@@ -189,24 +189,95 @@ textarea.addEventListener("input", function () {
 });
 
 const openModal = document.getElementById("open-modal");
+
 const modalWindowWrite = document.getElementById("modal-window-write");
+
 const modalWindowWriteCloseButton = document.getElementById(
   "modal-window-write-close-button",
 );
 
-openModal.addEventListener("click", function () {
+// openModal.addEventListener("click", function () {
+//   openModal.style.display = "none";
+//   modalWindowWrite.style.display = "block";
+// });
+
+function openWriteModal() {
   openModal.style.display = "none";
-  modalWindowWrite.style.display = "block";
-});
+
+  modalWindowWrite.style.display = "flex";
+  modalWindowWrite.style.height = "0px";
+  modalWindowWrite.style.overflow = "hidden";
+
+  requestAnimationFrame(() => {
+    modalWindowWrite.style.height =
+      modalWindowWrite.scrollHeight + "px";
+  });
+}
+
+// openModal.addEventListener("click", function () {
+//   openModal.style.display = "none";
+
+//   modalWindowWrite.style.display = "block";
+
+//   requestAnimationFrame(() => {
+//     modalWindowWrite.classList.add("open");
+//   });
+// });
 
 sendButton.addEventListener("click", function () {
   openModal.style.display = "block";
 });
 
-modalWindowWriteCloseButton.addEventListener("click", function () {
-  modalWindowWrite.style.display = "none";
-  openModal.style.display = "block";
+// modalWindowWriteCloseButton.addEventListener("click", function () {
+//   modalWindowWrite.style.display = "none";
+//   openModal.style.display = "block";
+// });
+
+function closeWriteModal() {
+  modalWindowWrite.style.height =
+    modalWindowWrite.scrollHeight + "px";
+
+  modalWindowWrite.style.overflow = "hidden";
+
+  // Фиксируем текущую высоту перед началом анимации
+  modalWindowWrite.offsetHeight;
+
+  requestAnimationFrame(() => {
+    modalWindowWrite.style.height = "0px";
+  });
+}
+
+openModal.addEventListener("click", openWriteModal);
+
+modalWindowWriteCloseButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  closeWriteModal();
 });
+
+modalWindowWrite.addEventListener("transitionend", (e) => {
+  if (e.propertyName !== "height") return;
+
+  if (modalWindowWrite.style.height === "0px") {
+    modalWindowWrite.style.display = "none";
+    modalWindowWrite.style.overflow = "hidden";
+    openModal.style.display = "block";
+  } else {
+    modalWindowWrite.style.height = "auto";
+    modalWindowWrite.style.overflow = "visible";
+  }
+});
+
+
+// modalWindowWriteCloseButton.addEventListener("click", function () {
+//   modalWindowWrite.classList.remove("open");
+
+//   modalWindowWrite.addEventListener("transitionend", function handler() {
+//     modalWindowWrite.style.display = "none";
+//     openModal.style.display = "block";
+
+//     modalWindowWrite.removeEventListener("transitionend", handler);
+//   });
+// });
 
 const storyForm = document.querySelector("#storyForm");
 
@@ -224,6 +295,24 @@ const storyForm = document.querySelector("#storyForm");
 //   window.location.reload();
 // });
 
+// storyForm.addEventListener("submit", async (e) => {
+//   e.preventDefault();
+
+//   if (!textarea.value.trim()) return;
+
+//   await addDoc(collection(db, "users", currentUser, "stories"), {
+//     content: textarea.value,
+//     createdAt: serverTimestamp(),
+//   });
+
+//   textarea.value = "";
+//   textarea.style.height = "auto"; 
+//   modalWindowWrite.style.display = "none"; 
+
+  
+//   await loadStories();
+// });
+
 storyForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -234,13 +323,16 @@ storyForm.addEventListener("submit", async (e) => {
     createdAt: serverTimestamp(),
   });
 
-  textarea.value = "";
-  textarea.style.height = "auto"; // Reset textarea height expansion
-  modalWindowWrite.style.display = "none"; // Close modal cleanly
+  closeWriteModal();
 
-  // Dynamic refresh: pulls from Firestore and updates innerHTML instantly
+  textarea.value = "";
+  textarea.style.height = "auto";
+
   await loadStories();
 });
+
+
+
 
 // async function loadStories() {
 //   const storiesQuery = query(

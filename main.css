@@ -81,15 +81,37 @@ main {
   flex-direction: column;
 }
 
-.modal-window-write {
-  /* margin-top: 40px; */
+/* .modal-window-write {
+ 
   width: 100%;
   display: flex;
   flex-direction: column;
   display: none;
 
-	/* border: 1px solid #000; */
+	
+} */
+
+.modal-window-write {
+  width: 100%;
+  display: none;
+  flex-direction: column;
+
+  height: 0;
+  overflow: hidden;
+
+  transition: height 0.5s ease;
 }
+
+/* #modalWindowWrite {
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.5s ease;
+}
+
+#modalWindowWrite.open {
+  transform: scaleY(1);
+} */
+
 
 /* .modal-window-write-close-button-container {
   display: flex;
@@ -175,6 +197,8 @@ textarea {
   padding-right: 20px;
   box-sizing: border-box;
 	margin-bottom: 15px;
+
+	/* background-color: rosybrown; */
 }
 
 .story {
