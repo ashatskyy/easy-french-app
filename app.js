@@ -206,7 +206,9 @@ function openWriteModal() {
 
   modalWindowWrite.style.display = "flex";
   modalWindowWrite.style.height = "0px";
-  modalWindowWrite.style.overflow = "hidden";
+	modalWindowWrite.style.overflow = "hidden";
+	
+	textarea.placeholder = "Écrivez ou collez votre texte...";
 
   requestAnimationFrame(() => {
     modalWindowWrite.style.height =
@@ -323,10 +325,17 @@ storyForm.addEventListener("submit", async (e) => {
     createdAt: serverTimestamp(),
   });
 
-  closeWriteModal();
+  // closeWriteModal();
 
-  textarea.value = "";
-  textarea.style.height = "auto";
+  // textarea.value = "";
+	// textarea.style.height = "auto";
+	
+	textarea.value = "";
+textarea.placeholder = "";
+
+closeWriteModal();
+
+textarea.style.height = "auto";
 
   await loadStories();
 });
