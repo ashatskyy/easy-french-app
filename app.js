@@ -148,26 +148,6 @@ function escapeHtml(text) {
     .replaceAll(">", "&gt;");
 }
 
-//here we use story.content
-// function addPlayButton(content) {
-//   const safeContent = escapeHtml(content);
-
-//   // contentForAllPlay.push(content);
-
-//   const playButton = `
-//     <button class="play-button" data-story="${safeContent}" data-state="play">
-//   <svg width="16" height="16" viewBox="0 0 16 16">
-//     <polygon points="4,2 13,8 4,14" fill="currentColor"></polygon>
-//   </svg>
-// </button>
-//   `;
-
-//   return safeContent.replace(
-//     /(\S+)\s*$/,
-//     `<span class="no-break">$1&nbsp;${playButton}</span>`,
-//   );
-// }
-
 function addPlayButton(content) {
   const safeContent = escapeHtml(content);
 
@@ -196,10 +176,7 @@ const modalWindowWriteCloseButton = document.getElementById(
   "modal-window-write-close-button",
 );
 
-// openModal.addEventListener("click", function () {
-//   openModal.style.display = "none";
-//   modalWindowWrite.style.display = "block";
-// });
+
 
 function openWriteModal() {
   openModal.style.display = "none";
@@ -216,24 +193,13 @@ function openWriteModal() {
   });
 }
 
-// openModal.addEventListener("click", function () {
-//   openModal.style.display = "none";
 
-//   modalWindowWrite.style.display = "block";
 
-//   requestAnimationFrame(() => {
-//     modalWindowWrite.classList.add("open");
-//   });
-// });
-
-sendButton.addEventListener("click", function () {
-  openModal.style.display = "block";
-});
-
-// modalWindowWriteCloseButton.addEventListener("click", function () {
-//   modalWindowWrite.style.display = "none";
+// sendButton.addEventListener("click", function () {
 //   openModal.style.display = "block";
 // });
+
+
 
 function closeWriteModal() {
   modalWindowWrite.style.height =
@@ -270,50 +236,10 @@ modalWindowWrite.addEventListener("transitionend", (e) => {
 });
 
 
-// modalWindowWriteCloseButton.addEventListener("click", function () {
-//   modalWindowWrite.classList.remove("open");
-
-//   modalWindowWrite.addEventListener("transitionend", function handler() {
-//     modalWindowWrite.style.display = "none";
-//     openModal.style.display = "block";
-
-//     modalWindowWrite.removeEventListener("transitionend", handler);
-//   });
-// });
 
 const storyForm = document.querySelector("#storyForm");
 
-// storyForm.addEventListener("submit", async (e) => {
-//   e.preventDefault();
 
-//   if (!textarea.value.trim()) return;
-
-//   await addDoc(collection(db, "users", currentUser, "stories"), {
-//     content: textarea.value,
-//     createdAt: serverTimestamp(),
-//   });
-
-//   textarea.value = "";
-//   window.location.reload();
-// });
-
-// storyForm.addEventListener("submit", async (e) => {
-//   e.preventDefault();
-
-//   if (!textarea.value.trim()) return;
-
-//   await addDoc(collection(db, "users", currentUser, "stories"), {
-//     content: textarea.value,
-//     createdAt: serverTimestamp(),
-//   });
-
-//   textarea.value = "";
-//   textarea.style.height = "auto"; 
-//   modalWindowWrite.style.display = "none"; 
-
-  
-//   await loadStories();
-// });
 
 storyForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -325,10 +251,7 @@ storyForm.addEventListener("submit", async (e) => {
     createdAt: serverTimestamp(),
   });
 
-  // closeWriteModal();
 
-  // textarea.value = "";
-	// textarea.style.height = "auto";
 	
 	textarea.value = "";
 textarea.placeholder = "";
@@ -342,49 +265,6 @@ textarea.style.height = "auto";
 
 
 
-
-// async function loadStories() {
-//   const storiesQuery = query(
-//     collection(db, "users", currentUser, "stories"),
-//     orderBy("createdAt", "desc"),
-//   );
-
-//   const snapshot = await getDocs(storiesQuery);
-
-//   //stories массив их объектов
-//   const stories = snapshot.docs.map((doc) => {
-//     return {
-//       id: doc.id,
-//       ...doc.data(),
-//     };
-//   });
-
-//   //HERE WE START TO FILL CONTAINER by JOIN in string all from array one by one
-//   container.innerHTML = stories
-//     .map((story) => {
-//       const createdAt = story.createdAt
-//         ? story.createdAt.toDate().toISOString()
-//         : "";
-
-//       return `
-//         <p class="story">
-
-//           ${addPlayButton(story.content)}
-
-//           <button
-//             class="modal-window-delete-story-call-button"
-//             data-id="${story.id}"
-//             data-created-at="${createdAt}"
-// 						 data-story="${escapeHtml(story.content)}"
-//           >
-//             &times;
-//           </button>
-//         </p>
-//         <hr>
-//       `;
-//     })
-//     .join("");
-// }
 
 async function loadStories() {
   // CRITICAL SAFETY CLEAR: Stop any active speech or timers running right now
@@ -491,9 +371,7 @@ listenToAll.addEventListener("click", () => {
 
     if (i >= document.querySelectorAll("#storys-conatiner .story").length) {
       i = 0;
-      // isPlayingAll = false;
-      // listenToAll.innerHTML = playIcon;
-      // return;
+
     }
 
     const stories = document.querySelectorAll("#storys-conatiner .story");
@@ -513,10 +391,6 @@ listenToAll.addEventListener("click", () => {
       buttonInCycle.dataset.state = "stop";
     }
 
-    // console.log(document
-    //     .querySelectorAll("#storys-conatiner .story")
-    //     [i].querySelector(".play-button")
-    // );
 
     buttonInCyclePlayingNow = document
       .querySelectorAll("#storys-conatiner .story")
@@ -639,14 +513,7 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// modalWindowDeleteButtonYes.addEventListener("click", async () => {
-//   if (!currentStoryId) return;
 
-//   await deleteDoc(doc(db, "users", currentUser, "stories", currentStoryId));
-
-//   overlayBackgroundForDeleteStory.style.display = "none";
-//   location.reload();
-// });
 
 modalWindowDeleteButtonYes.addEventListener("click", async () => {
   if (!currentStoryId) return;
