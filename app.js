@@ -109,35 +109,35 @@ onAuthStateChanged(auth, async (user) => {
   await loadStories();
 });
 
-function formatGreenwich(dateStr) {
-  const date = new Date(dateStr);
+// function formatGreenwich(dateStr) {
+//   const date = new Date(dateStr);
 
-  const day = String(date.getUTCDate()).padStart(2, "0");
+//   const day = String(date.getUTCDate()).padStart(2, "0");
 
-  const monthNames = [
-    "janvier",
-    "février",
-    "mars",
-    "avril",
-    "mai",
-    "juin",
-    "juillet",
-    "août",
-    "septembre",
-    "octobre",
-    "novembre",
-    "décembre",
-  ];
+//   const monthNames = [
+//     "janvier",
+//     "février",
+//     "mars",
+//     "avril",
+//     "mai",
+//     "juin",
+//     "juillet",
+//     "août",
+//     "septembre",
+//     "octobre",
+//     "novembre",
+//     "décembre",
+//   ];
 
-  const month = monthNames[date.getUTCMonth()];
-  const year = date.getUTCFullYear();
+//   const month = monthNames[date.getUTCMonth()];
+//   const year = date.getUTCFullYear();
 
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  const seconds = String(date.getSeconds()).padStart(2, "0");
+//   const hours = String(date.getHours()).padStart(2, "0");
+//   const minutes = String(date.getMinutes()).padStart(2, "0");
+//   const seconds = String(date.getSeconds()).padStart(2, "0");
 
-  return `${day} ${month} ${year} à ${hours}:${minutes}:${seconds}`;
-}
+//   return `${day} ${month} ${year} à ${hours}:${minutes}:${seconds}`;
+// }
 
 function escapeHtml(text) {
   return text
@@ -176,34 +176,26 @@ const modalWindowWriteCloseButton = document.getElementById(
   "modal-window-write-close-button",
 );
 
-
-
 function openWriteModal() {
   openModal.style.display = "none";
 
   modalWindowWrite.style.display = "flex";
   modalWindowWrite.style.height = "0px";
-	modalWindowWrite.style.overflow = "hidden";
-	
-	textarea.placeholder = "Écrivez ou collez votre texte...";
+  modalWindowWrite.style.overflow = "hidden";
+
+  textarea.placeholder = "Écrivez ou collez votre texte...";
 
   requestAnimationFrame(() => {
-    modalWindowWrite.style.height =
-      modalWindowWrite.scrollHeight + "px";
+    modalWindowWrite.style.height = modalWindowWrite.scrollHeight + "px";
   });
 }
-
-
 
 // sendButton.addEventListener("click", function () {
 //   openModal.style.display = "block";
 // });
 
-
-
 function closeWriteModal() {
-  modalWindowWrite.style.height =
-    modalWindowWrite.scrollHeight + "px";
+  modalWindowWrite.style.height = modalWindowWrite.scrollHeight + "px";
 
   modalWindowWrite.style.overflow = "hidden";
 
@@ -235,36 +227,43 @@ modalWindowWrite.addEventListener("transitionend", (e) => {
   }
 });
 
-
-
 const storyForm = document.querySelector("#storyForm");
 
-
+let isSubmitting = false;
 
 storyForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  // Игнорируем повторные нажатия
+  if (isSubmitting) return;
+
   if (!textarea.value.trim()) return;
 
-  await addDoc(collection(db, "users", currentUser, "stories"), {
-    content: textarea.value,
-    createdAt: serverTimestamp(),
-  });
+  // Блокируем новую отправку немедленно
+  isSubmitting = true;
+  sendButton.disabled = true;
 
+  try {
+    await addDoc(collection(db, "users", currentUser, "stories"), {
+      content: textarea.value,
+      createdAt: serverTimestamp(),
+    });
 
-	
-	textarea.value = "";
-textarea.placeholder = "";
+    textarea.value = "";
+    textarea.placeholder = "";
+    textarea.style.height = "auto";
 
-closeWriteModal();
+    closeWriteModal();
 
-textarea.style.height = "auto";
-
-  await loadStories();
+    await loadStories();
+  } catch (error) {
+    console.error("Erreur lors de l'envoi :", error);
+    alert("Impossible d'envoyer votre histoire. Réessayez.");
+  } finally {
+    isSubmitting = false;
+    sendButton.disabled = false;
+  }
 });
-
-
-
 
 async function loadStories() {
   // CRITICAL SAFETY CLEAR: Stop any active speech or timers running right now
@@ -309,11 +308,49 @@ async function loadStories() {
 				</button>
 				${addPlayButton(story.content)}
         </p>
+				<form class="form-edit-story" id="formEditStory">
+		  <div class="cut cut-left"></div>
+		<div class="cut cut-right"></div>
+		      <div class="story-editor" contenteditable="true" spellcheck="false">${escapeHtml(story.content)}</div>
+		      <button type="submit" class="edit-story-send-button">vV</button>
+	</form>
         <hr>
       `;
     })
     .join("");
 }
+
+
+
+
+document.addEventListener("dblclick", (e) => {
+  const story = e.target.closest(".story");
+
+  if (!story) return;
+  if (e.target.closest("button")) return;
+
+  const formEditStory = story.nextElementSibling;
+
+	// if (!formEditStory?.classList.contains("formEditStory")) return;
+	
+	if (!formEditStory?.classList.contains("form-edit-story")) return;
+
+  const isEditing = formEditStory.style.display === "block";
+
+  story.style.display = isEditing ? "" : "none";
+  formEditStory.style.display = isEditing ? "none" : "block";
+});
+
+document.addEventListener("submit", (e) => {
+  const form = e.target.closest(".form-edit-story");
+  if (!form) return;
+
+  e.preventDefault(); // без этого страница перезагружается
+
+  form.style.display = "none";                       // убираем форму
+  form.previousElementSibling.style.display = "";    // возвращаем абзац .story
+});
+
 
 listenToAll.innerHTML = playIcon;
 
@@ -371,7 +408,6 @@ listenToAll.addEventListener("click", () => {
 
     if (i >= document.querySelectorAll("#storys-conatiner .story").length) {
       i = 0;
-
     }
 
     const stories = document.querySelectorAll("#storys-conatiner .story");
@@ -390,7 +426,6 @@ listenToAll.addEventListener("click", () => {
 
       buttonInCycle.dataset.state = "stop";
     }
-
 
     buttonInCyclePlayingNow = document
       .querySelectorAll("#storys-conatiner .story")
@@ -512,8 +547,6 @@ document.addEventListener("click", (e) => {
     sound(currentStory, button);
   }
 });
-
-
 
 modalWindowDeleteButtonYes.addEventListener("click", async () => {
   if (!currentStoryId) return;
