@@ -199,37 +199,15 @@ textarea {
 
 .cut {
   height: 1.5em;
-  /* background: red; */
 }
 .cut-left  { float: left;  width: 26px; }
 .cut-right { float: right; width: 60px; }
 
-.story-editor {
+/* .story-editor {
   outline: none;
 	line-height: 1.5;
 
 	  text-align: justify;
-}
-/* 
-.edit-story-button-container{
-	display: flex;
-	justify-content: flex-end;
-
-	
-}
-
-.edit-story-send-button {
-	width: 22px;
-	height: 22px;
-	padding: 0;
-	border: 0;
-	
-	background-color: transparent;
-
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
 } */
 
 
@@ -253,10 +231,18 @@ textarea {
 	cursor: pointer;
 } 
 
+.story-editor {
+	outline: none;
+	line-height: 1.5;
+	text-align: justify;
+	overflow-wrap: normal;
+	word-break: normal;
+}
+
 .story-editor::after {
 	content: "\2060";      
 	display: inline;
-	padding-right: 30px;   
+	padding-right: 60px;   
 
 
 }

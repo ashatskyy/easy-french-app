@@ -291,7 +291,7 @@ async function loadStories() {
 					<div class="edit-story-button-container">
 					
 		      <button type="submit" class="edit-story-send-button">
-<svg viewBox="0 0 24 24" width="13.5" height="13.5" overflow="visible" fill="none" stroke="currentColor" stroke-width="3.9" stroke-linecap="butt" stroke-linejoin="miter"><path d="M6.94 12.76 L15.34 22.56 L24.34 6.56"/></svg>					</button>
+<svg viewBox="0 0 24 24" width="13.5" height="13.5" overflow="visible" fill="none" stroke="currentColor" stroke-width="3.9" stroke-linecap="butt" stroke-linejoin="miter"><path d="M5.16 12.76 L13.56 22.56 L23.91 4.16"/></svg>		</button>
 					</div>
 
 	</form>
