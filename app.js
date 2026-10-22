@@ -291,7 +291,9 @@ async function loadStories() {
 					<div class="edit-story-button-container">
 					
 		      <button type="submit" class="edit-story-send-button">
-<svg viewBox="0 0 24 24" width="13.5" height="13.5" overflow="visible" fill="none" stroke="currentColor" stroke-width="3.9" stroke-linecap="butt" stroke-linejoin="miter"><path d="M5.16 12.76 L13.56 22.56 L23.91 4.16"/></svg>		</button>
+
+<svg viewBox="0 0 24 24" width="12.15" height="12.15" overflow="visible" fill="none" stroke="currentColor" stroke-width="3.9" stroke-linecap="butt" stroke-linejoin="miter"><path d="M3.77 14.15 L13.56 22.56 L26.6 5.96"/></svg>
+					</button>
 					</div>
 
 	</form>
@@ -302,6 +304,17 @@ async function loadStories() {
 }
 
 
+
+
+
+function updateButtonContainerHeight(form) {
+  const editor = form.querySelector(".story-editor");
+  const container = form.querySelector(".edit-story-button-container");
+  const lineHeight = parseFloat(getComputedStyle(editor).lineHeight);
+  const lines = Math.round(editor.getBoundingClientRect().height / lineHeight);
+
+  container.style.height = lines <= 1 ? "22px" : "0";
+}
 
 
 document.addEventListener("dblclick", (e) => {
@@ -319,7 +332,14 @@ document.addEventListener("dblclick", (e) => {
   const isEditing = formEditStory.style.display === "block";
 
   story.style.display = isEditing ? "" : "none";
-  formEditStory.style.display = isEditing ? "none" : "block";
+	formEditStory.style.display = isEditing ? "none" : "block";
+	
+	if (!isEditing) updateButtonContainerHeight(formEditStory);
+});
+
+document.addEventListener("input", (e) => {
+  const form = e.target.closest(".form-edit-story");
+  if (form) updateButtonContainerHeight(form);
 });
 
 // document.addEventListener("submit", (e) => {
