@@ -284,7 +284,7 @@ async function loadStories() {
 <form class="form-edit-story" data-id="${story.id}">
 		    <div class="cut cut-left"></div>
 		    <div class="cut cut-right">
-				 <button class="modal-window-delete-story-call-button">		&times; </button>
+				 <button class="edit-story-container-close">		&times; </button>
 				</div>
 
 		      <div class="story-editor" contenteditable="true" spellcheck="false">${escapeHtml(story.content)}</div>
@@ -292,7 +292,10 @@ async function loadStories() {
 					
 		      <button type="submit" class="edit-story-send-button">
 
-<svg viewBox="0 0 24 24" width="12.15" height="12.15" overflow="visible" fill="none" stroke="currentColor" stroke-width="3.9" stroke-linecap="butt" stroke-linejoin="miter"><path d="M3.77 14.15 L13.56 22.56 L26.6 5.96"/></svg>
+					
+<svg viewBox="0 0 24 24" width="13.5" height="13.5" overflow="visible" fill="none" stroke="currentColor" stroke-width="4.68" stroke-linecap="butt" stroke-linejoin="miter"><path d="M3.77 14.15 L13.56 22.56 L26.6 5.96"/></svg>
+
+					
 					</button>
 					</div>
 
@@ -305,7 +308,7 @@ async function loadStories() {
 
 
 
-
+// const 
 
 function updateButtonContainerHeight(form) {
   const editor = form.querySelector(".story-editor");
@@ -325,7 +328,6 @@ document.addEventListener("dblclick", (e) => {
 
   const formEditStory = story.nextElementSibling;
 
-	// if (!formEditStory?.classList.contains("formEditStory")) return;
 	
 	if (!formEditStory?.classList.contains("form-edit-story")) return;
 
@@ -342,28 +344,6 @@ document.addEventListener("input", (e) => {
   if (form) updateButtonContainerHeight(form);
 });
 
-// document.addEventListener("submit", (e) => {
-//   const form = e.target.closest(".form-edit-story");
-//   if (!form) return;
-
-//   e.preventDefault(); 
-
-//   form.style.display = "none";                       
-//   form.previousElementSibling.style.display = "";    
-// });
-
-
-
-
-// document.addEventListener("submit", (e) => {
-//   const form = e.target.closest(".form-edit-story");
-//   if (!form) return;
-
-//   e.preventDefault();
-
-//   form.style.display = "none";
-//   form.previousElementSibling.style.display = "";
-// });
 
 
 

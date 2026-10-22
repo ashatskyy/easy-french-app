@@ -57,6 +57,7 @@ header {
 .send-button,
 .modal-window-delete-story-call-button,
 .modal-window-delete-button-yes,
+.edit-story-container-close,
 .modal-window-delete-button-no {
   cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
@@ -95,6 +96,7 @@ main {
 .modal-window-write-close-button,
 .modal-window-delete-story-call-button,
 .modal-window-delete-button-yes,
+.edit-story-container-close,
 .modal-window-delete-button-no {
   border: 0;
   background-color: transparent;
@@ -325,7 +327,8 @@ textarea {
 }
 
 
-.modal-window-delete-story-call-button {
+.modal-window-delete-story-call-button,
+.edit-story-container-close {
 	float: right;
 	margin-left: 40px;
 
