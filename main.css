@@ -210,10 +210,61 @@ textarea {
 
 	  text-align: justify;
 }
-
+/* 
 .edit-story-button-container{
 	display: flex;
 	justify-content: flex-end;
+
+	
+}
+
+.edit-story-send-button {
+	width: 22px;
+	height: 22px;
+	padding: 0;
+	border: 0;
+	
+	background-color: transparent;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+} */
+
+
+.edit-story-button-container {
+	position: relative;
+	height: 0;
+}
+
+.edit-story-send-button {
+	position: absolute;
+	right: 0;
+	bottom: 0;         
+	width: 22px;
+	height: 22px;
+	padding: 0;
+	border: 0;
+	background-color: transparent;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+} 
+
+.story-editor::after {
+	content: "\2060";      
+	display: inline;
+	padding-right: 30px;   
+
+
+}
+
+
+
+.edit-story-send-button svg {
+	display: block;
 }
 
 .no-break {

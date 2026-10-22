@@ -9,7 +9,7 @@ import {
   addDoc,
   serverTimestamp,
 	deleteDoc,
-	
+	 updateDoc,
   doc,
   query,
   orderBy,
@@ -280,8 +280,8 @@ async function loadStories() {
 				</button>
 				${addPlayButton(story.content)}
         </p>
-				<form class="form-edit-story" id="formEditStory">
-
+				
+<form class="form-edit-story" data-id="${story.id}">
 		    <div class="cut cut-left"></div>
 		    <div class="cut cut-right">
 				 <button class="modal-window-delete-story-call-button">		&times; </button>
@@ -290,7 +290,8 @@ async function loadStories() {
 		      <div class="story-editor" contenteditable="true" spellcheck="false">${escapeHtml(story.content)}</div>
 					<div class="edit-story-button-container">
 					
-		      <button type="submit" class="edit-story-send-button">vV</button>
+		      <button type="submit" class="edit-story-send-button">
+<svg viewBox="0 0 24 24" width="13.5" height="13.5" overflow="visible" fill="none" stroke="currentColor" stroke-width="3.9" stroke-linecap="butt" stroke-linejoin="miter"><path d="M6.94 12.76 L15.34 22.56 L24.34 6.56"/></svg>					</button>
 					</div>
 
 	</form>
@@ -321,15 +322,70 @@ document.addEventListener("dblclick", (e) => {
   formEditStory.style.display = isEditing ? "none" : "block";
 });
 
-document.addEventListener("submit", (e) => {
+// document.addEventListener("submit", (e) => {
+//   const form = e.target.closest(".form-edit-story");
+//   if (!form) return;
+
+//   e.preventDefault(); 
+
+//   form.style.display = "none";                       
+//   form.previousElementSibling.style.display = "";    
+// });
+
+
+
+
+// document.addEventListener("submit", (e) => {
+//   const form = e.target.closest(".form-edit-story");
+//   if (!form) return;
+
+//   e.preventDefault();
+
+//   form.style.display = "none";
+//   form.previousElementSibling.style.display = "";
+// });
+
+
+
+document.addEventListener("submit", async (e) => {
   const form = e.target.closest(".form-edit-story");
   if (!form) return;
 
-  e.preventDefault(); // без этого страница перезагружается
+  e.preventDefault();
 
-  form.style.display = "none";                       // убираем форму
-  form.previousElementSibling.style.display = "";    // возвращаем абзац .story
+  const storyId = form.dataset.id;
+  const editor = form.querySelector(".story-editor");
+  const editedContent = editor.textContent.trim();
+
+  if (!storyId || !editedContent) {
+    alert("Le texte ne peut pas être vide.");
+    return;
+  }
+
+  const button = form.querySelector(".edit-story-send-button");
+  button.disabled = true;
+
+  try {
+    // Сохраняем отредактированный текст в Firestore
+    await updateDoc(
+      doc(db, "users", currentUser, "stories", storyId),
+      {
+        content: editedContent,
+        updatedAt: serverTimestamp(),
+      }
+    );
+
+    // Перезагружаем истории с обновлёнными данными из базы
+    await loadStories();
+
+  } catch (error) {
+    console.error("Erreur lors de la modification :", error);
+    alert("Impossible d'enregistrer les modifications.");
+    button.disabled = false;
+  }
 });
+
+
 
 
 listenToAll.innerHTML = playIcon;
