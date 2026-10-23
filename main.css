@@ -223,19 +223,13 @@ textarea {
 .cut-left  { float: left;  width: 26px; }
 .cut-right { float: right; width: 60px; }
 
-/* .story-editor {
-  outline: none;
-	line-height: 1.5;
 
-	  text-align: justify;
-} */
 
 
 .edit-story-button-container {
 	position: relative;
 	height: 0;
-	 /* height: 22px; */
-	/* margin-top: 20px; */
+
 
 }
 
@@ -264,10 +258,7 @@ textarea {
 	overflow-wrap: normal;
 	word-break: normal;
 
-	/* border: 1px solid #000; */
 
-	/* background-color:#F9EBEB;
-	border-radius: 10px; */
 
 }
 

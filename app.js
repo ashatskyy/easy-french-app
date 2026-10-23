@@ -204,68 +204,97 @@ let isSubmitting = false;
 storyForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  // Игнорируем повторные нажатия
   if (isSubmitting) return;
 
-  if (!textarea.value.trim()) return;
+  const content = textarea.value;
+  if (!content.trim()) return;
 
-  // Блокируем новую отправку немедленно
   isSubmitting = true;
   sendButton.disabled = true;
 
   try {
-    await addDoc(collection(db, "users", currentUser, "stories"), {
-      content: textarea.value,
+    const docRef = await addDoc(collection(db, "users", currentUser, "stories"), {
+      content,
       createdAt: serverTimestamp(),
     });
+
+    // Вставляем новую историю наверх, остальное не трогаем
+    container.insertAdjacentHTML(
+      "afterbegin",
+      renderStory({ id: docRef.id, content, createdAt: new Date() })
+    );
 
     textarea.value = "";
     textarea.placeholder = "";
     textarea.style.height = "auto";
 
     closeWriteModal();
-
-    await loadStories();
   } catch (error) {
     console.error("Erreur lors de l'envoi :", error);
-    alert("Impossible d'envoyer votre histoire. Réessayez.");
   } finally {
     isSubmitting = false;
     sendButton.disabled = false;
   }
 });
 
-async function loadStories() {
-  // CRITICAL SAFETY CLEAR: Stop any active speech or timers running right now
-  window.speechSynthesis.cancel();
-  isPlayingAll = false;
-  if (timeoutId) clearTimeout(timeoutId);
-  listenToAll.innerHTML = playIcon;
-  lastButton = null;
-  buttonInCyclePlayingNow = null;
 
-  const storiesQuery = query(
-    collection(db, "users", currentUser, "stories"),
-    orderBy("createdAt", "desc"),
-  );
+// storyForm.addEventListener("submit", async (e) => {
+//   e.preventDefault();
 
-  const snapshot = await getDocs(storiesQuery);
+ 
+//   if (isSubmitting) return;
 
-  const stories = snapshot.docs.map((doc) => {
-    return {
-      id: doc.id,
-      ...doc.data(),
-    };
-  });
+//   if (!textarea.value.trim()) return;
 
-  // Re-render HTML matching your updated format perfectly
-  container.innerHTML = stories
-    .map((story) => {
-      const createdAt = story.createdAt
-        ? story.createdAt.toDate().toISOString()
-        : "";
+  
+//   isSubmitting = true;
+//   sendButton.disabled = true;
 
-      return `
+//   try {
+//     await addDoc(collection(db, "users", currentUser, "stories"), {
+//       content: textarea.value,
+//       createdAt: serverTimestamp(),
+//     });
+
+//     textarea.value = "";
+//     textarea.placeholder = "";
+//     textarea.style.height = "auto";
+
+//     closeWriteModal();
+
+//     await loadStories();
+//   } catch (error) {
+//     console.error("Erreur lors de l'envoi :", error);
+//     alert("Impossible d'envoyer votre histoire. Réessayez.");
+//   } finally {
+//     isSubmitting = false;
+//     sendButton.disabled = false;
+//   }
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function renderStory(story) {
+  const created = story.createdAt?.toDate?.() ?? story.createdAt;
+  const createdAt = created ? new Date(created).toISOString() : "";
+
+  return `
         <p class="story">
 				
 				<button
@@ -306,8 +335,105 @@ async function loadStories() {
 	</form>
         <hr>
       `;
-    })
-    .join("");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async function loadStories() {
+  // CRITICAL SAFETY CLEAR: Stop any active speech or timers running right now
+  window.speechSynthesis.cancel();
+  isPlayingAll = false;
+  if (timeoutId) clearTimeout(timeoutId);
+  listenToAll.innerHTML = playIcon;
+  lastButton = null;
+  buttonInCyclePlayingNow = null;
+
+  const storiesQuery = query(
+    collection(db, "users", currentUser, "stories"),
+    orderBy("createdAt", "desc"),
+  );
+
+  const snapshot = await getDocs(storiesQuery);
+
+  const stories = snapshot.docs.map((doc) => {
+    return {
+      id: doc.id,
+      ...doc.data(),
+    };
+  });
+
+  // Re-render HTML matching your updated format perfectly
+//   container.innerHTML = stories
+//     .map((story) => {
+//       const createdAt = story.createdAt
+//         ? story.createdAt.toDate().toISOString()
+//         : "";
+
+//       return `
+//         <p class="story">
+				
+// 				<button
+// 				class="modal-window-delete-story-call-button"
+// 				data-id="${story.id}"
+// 				data-created-at="${createdAt}"
+// 				data-story="${escapeHtml(story.content)}"
+// 				>
+// 				&times;
+// 				</button>
+// 				${addPlayButton(story.content)}
+//         </p>
+				
+// <form class="form-edit-story" data-id="${story.id}">
+		    
+
+// <div class="cut cut-left">
+//   <svg viewBox="0 0 24 24" width="13.5" height="13.5" overflow="visible" fill="currentColor" stroke="none"><g transform="translate(3.55, 3.56) rotate(35 12 17.2)"><rect x="8.55" y="1" width="6.9" height="3.5" rx="0.8"/><path d="M 8.55 6 L 15.45 6 L 15.45 28 L 12 33.4 L 8.55 28 Z"/></g></svg>
+// </div>
+
+
+// 		    <div class="cut cut-right">
+// 				 <button type="button" class="edit-story-container-close" data-action="close-edit-story">&times;</button>
+// 				</div>
+
+// 		      <div class="story-editor" contenteditable="true" spellcheck="false">${escapeHtml(story.content)}</div>
+// 					<div class="edit-story-button-container">
+					
+// 		      <button type="submit" class="edit-story-send-button">
+
+					
+// <svg viewBox="0 0 24 24" width="13.5" height="13.5" overflow="visible" fill="none" stroke="currentColor" stroke-width="4.68" stroke-linecap="butt" stroke-linejoin="miter"><path d="M3.77 14.15 L13.56 22.56 L26.6 5.96"/></svg>
+
+					
+// 					</button>
+// 					</div>
+
+// 	</form>
+//         <hr>
+//       `;
+//     })
+	//     .join("");
+	
+
+	container.innerHTML = stories.map(renderStory).join("");
 }
 
 document.addEventListener("click", (e) => {
@@ -439,43 +565,6 @@ document.addEventListener("input", (e) => {
 });
 
 
-
-
-// document.addEventListener("submit", async (e) => {
-//   const form = e.target.closest(".form-edit-story");
-//   if (!form) return;
-
-//   e.preventDefault();
-
-//   const storyId = form.dataset.id;
-//   const editor = form.querySelector(".story-editor");
-//   const editedContent = editor.textContent.trim();
-
-  
-// 	if (!storyId || !editedContent) return;
-
-//   const button = form.querySelector(".edit-story-send-button");
-//   button.disabled = true;
-
-//   try {
-   
-//     await updateDoc(
-//       doc(db, "users", currentUser, "stories", storyId),
-//       {
-//         content: editedContent,
-//         updatedAt: serverTimestamp(),
-//       }
-//     );
-
-    
-//     await loadStories();
-
-//   } catch (error) {
-//     console.error("Erreur lors de la modification :", error);
-//     alert("Impossible d'enregistrer les modifications.");
-//     button.disabled = false;
-//   }
-// });
 
 
 document.addEventListener("submit", async (e) => {
@@ -717,17 +806,7 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// modalWindowDeleteButtonYes.addEventListener("click", async () => {
-//   if (!currentStoryId) return;
 
-//   await deleteDoc(doc(db, "users", currentUser, "stories", currentStoryId));
-
-//   overlayBackgroundForDeleteStory.style.display = "none";
-//   currentStoryId = null;
-
- 
-//   await loadStories();
-// });
 
 modalWindowDeleteButtonYes.addEventListener("click", async () => {
   if (!currentStoryId) return;
