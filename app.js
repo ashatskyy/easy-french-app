@@ -110,6 +110,12 @@ onAuthStateChanged(auth, async (user) => {
   await loadStories();
 });
 
+function frenchSpacing(text) {
+  return text
+    .replace(/(\p{L})\s*([!?;])/gu, "$1\u202F$2")
+    .replace(/(\p{L})\s*:(?!\/\/|\d)/gu, "$1\u00A0:");
+}
+
 
 function escapeHtml(text) {
   return text
@@ -206,7 +212,8 @@ storyForm.addEventListener("submit", async (e) => {
 
   if (isSubmitting) return;
 
-  const content = textarea.value;
+	// const content = textarea.value;
+	const content = frenchSpacing(textarea.value);
   if (!content.trim()) return;
 
   isSubmitting = true;
@@ -575,8 +582,9 @@ document.addEventListener("submit", async (e) => {
 
   const storyId = form.dataset.id;
   const editor = form.querySelector(".story-editor");
-  const editedContent = editor.textContent.trim();
+  // const editedContent = editor.textContent.trim();
 
+	const editedContent = frenchSpacing(editor.textContent.trim());
   if (!storyId || !editedContent) return;
 
   const button = form.querySelector(".edit-story-send-button");
