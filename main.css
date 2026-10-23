@@ -196,6 +196,17 @@ textarea {
 	cursor: pointer;
 }
 
+.story,
+.story * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.story {
+  touch-action: manipulation;
+}
+
 .form-edit-story{
 	display: none;
 	padding-left: 5px;
