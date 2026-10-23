@@ -282,9 +282,15 @@ async function loadStories() {
         </p>
 				
 <form class="form-edit-story" data-id="${story.id}">
-		    <div class="cut cut-left"></div>
+		    
+
+<div class="cut cut-left">
+  <svg viewBox="0 0 24 24" width="13.5" height="13.5" overflow="visible" fill="currentColor" stroke="none"><g transform="translate(3.55, 3.56) rotate(35 12 17.2)"><rect x="8.55" y="1" width="6.9" height="3.5" rx="0.8"/><path d="M 8.55 6 L 15.45 6 L 15.45 28 L 12 33.4 L 8.55 28 Z"/></g></svg>
+</div>
+
+
 		    <div class="cut cut-right">
-				 <button class="edit-story-container-close">		&times; </button>
+				 <button type="button" class="edit-story-container-close" data-action="close-edit-story">&times;</button>
 				</div>
 
 		      <div class="story-editor" contenteditable="true" spellcheck="false">${escapeHtml(story.content)}</div>
@@ -306,7 +312,20 @@ async function loadStories() {
     .join("");
 }
 
+document.addEventListener("click", (e) => {
+  const closeButton = e.target.closest(".edit-story-container-close");
+  if (!closeButton) return;
 
+  const form = closeButton.closest(".form-edit-story");
+  const story = form.previousElementSibling;
+
+  // Вернуть исходный текст, чтобы при следующем открытии не остались правки
+  const original = story.querySelector(".play-button").dataset.story;
+  form.querySelector(".story-editor").textContent = original;
+
+  form.style.display = "none";
+  story.style.display = "";
+});
 
 // const 
 
@@ -320,6 +339,37 @@ function updateButtonContainerHeight(form) {
 }
 
 
+// document.addEventListener("dblclick", (e) => {
+//   const story = e.target.closest(".story");
+
+//   if (!story) return;
+//   if (e.target.closest("button")) return;
+
+//   const formEditStory = story.nextElementSibling;
+
+	
+// 	if (!formEditStory?.classList.contains("form-edit-story")) return;
+
+//   const isEditing = formEditStory.style.display === "block";
+
+//   story.style.display = isEditing ? "" : "none";
+// 	formEditStory.style.display = isEditing ? "none" : "block";
+	
+// 	if (!isEditing) updateButtonContainerHeight(formEditStory);
+// });
+
+function focusAtEnd(element) {
+  element.focus({ preventScroll: true });
+
+  const range = document.createRange();
+  range.selectNodeContents(element);
+  range.collapse(false); // false = в конец
+
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
 document.addEventListener("dblclick", (e) => {
   const story = e.target.closest(".story");
 
@@ -328,16 +378,23 @@ document.addEventListener("dblclick", (e) => {
 
   const formEditStory = story.nextElementSibling;
 
-	
-	if (!formEditStory?.classList.contains("form-edit-story")) return;
+  if (!formEditStory?.classList.contains("form-edit-story")) return;
 
   const isEditing = formEditStory.style.display === "block";
 
   story.style.display = isEditing ? "" : "none";
-	formEditStory.style.display = isEditing ? "none" : "block";
-	
-	if (!isEditing) updateButtonContainerHeight(formEditStory);
+  formEditStory.style.display = isEditing ? "none" : "block";
+
+  if (!isEditing) {
+    updateButtonContainerHeight(formEditStory);
+
+    const editor = formEditStory.querySelector(".story-editor");
+    focusAtEnd(editor);
+  }
 });
+
+
+
 
 document.addEventListener("input", (e) => {
   const form = e.target.closest(".form-edit-story");
@@ -345,6 +402,43 @@ document.addEventListener("input", (e) => {
 });
 
 
+
+
+// document.addEventListener("submit", async (e) => {
+//   const form = e.target.closest(".form-edit-story");
+//   if (!form) return;
+
+//   e.preventDefault();
+
+//   const storyId = form.dataset.id;
+//   const editor = form.querySelector(".story-editor");
+//   const editedContent = editor.textContent.trim();
+
+  
+// 	if (!storyId || !editedContent) return;
+
+//   const button = form.querySelector(".edit-story-send-button");
+//   button.disabled = true;
+
+//   try {
+   
+//     await updateDoc(
+//       doc(db, "users", currentUser, "stories", storyId),
+//       {
+//         content: editedContent,
+//         updatedAt: serverTimestamp(),
+//       }
+//     );
+
+    
+//     await loadStories();
+
+//   } catch (error) {
+//     console.error("Erreur lors de la modification :", error);
+//     alert("Impossible d'enregistrer les modifications.");
+//     button.disabled = false;
+//   }
+// });
 
 
 document.addEventListener("submit", async (e) => {
@@ -357,16 +451,12 @@ document.addEventListener("submit", async (e) => {
   const editor = form.querySelector(".story-editor");
   const editedContent = editor.textContent.trim();
 
-  if (!storyId || !editedContent) {
-    alert("Le texte ne peut pas être vide.");
-    return;
-  }
+  if (!storyId || !editedContent) return;
 
   const button = form.querySelector(".edit-story-send-button");
   button.disabled = true;
 
   try {
-    // Сохраняем отредактированный текст в Firestore
     await updateDoc(
       doc(db, "users", currentUser, "stories", storyId),
       {
@@ -375,18 +465,24 @@ document.addEventListener("submit", async (e) => {
       }
     );
 
-    // Перезагружаем истории с обновлёнными данными из базы
-    await loadStories();
+    // Обновляем только эту историю, остальные формы не трогаем
+    const story = form.previousElementSibling;
 
+    story.querySelector(".play-button").dataset.story = editedContent;
+    story.querySelector(".modal-window-delete-story-call-button").dataset.story = editedContent;
+    story.lastChild.textContent = editedContent; // текстовый узел после кнопок
+
+    editor.textContent = editedContent;
+
+    // Закрываем только эту форму
+    form.style.display = "none";
+    story.style.display = "";
+    button.disabled = false;
   } catch (error) {
     console.error("Erreur lors de la modification :", error);
-    alert("Impossible d'enregistrer les modifications.");
     button.disabled = false;
   }
 });
-
-
-
 
 listenToAll.innerHTML = playIcon;
 
@@ -584,16 +680,38 @@ document.addEventListener("click", (e) => {
   }
 });
 
+// modalWindowDeleteButtonYes.addEventListener("click", async () => {
+//   if (!currentStoryId) return;
+
+//   await deleteDoc(doc(db, "users", currentUser, "stories", currentStoryId));
+
+//   overlayBackgroundForDeleteStory.style.display = "none";
+//   currentStoryId = null;
+
+ 
+//   await loadStories();
+// });
+
 modalWindowDeleteButtonYes.addEventListener("click", async () => {
   if (!currentStoryId) return;
 
+  const deleteBtn = document.querySelector(
+    `.modal-window-delete-story-call-button[data-id="${currentStoryId}"]`
+  );
+  const story = deleteBtn?.closest(".story");
+
   await deleteDoc(doc(db, "users", currentUser, "stories", currentStoryId));
+
+  if (story) {
+    const form = story.nextElementSibling;
+    const hr = form?.nextElementSibling;
+    hr?.remove();
+    form?.remove();
+    story.remove();
+  }
 
   overlayBackgroundForDeleteStory.style.display = "none";
   currentStoryId = null;
-
-  // Dynamic refresh: instantly reflects the deletion on screen
-  await loadStories();
 });
 
 modalWindowDeleteButtonNo.addEventListener("click", () => {

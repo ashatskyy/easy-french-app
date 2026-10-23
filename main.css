@@ -197,11 +197,15 @@ textarea {
 	display: none;
 	padding-left: 5px;
 	padding-right: 5px;
+
+	background-color: #F9EBEB;
+	border-radius: 10px;
 }
 
 .cut {
   height: 1.5em;
 }
+
 .cut-left  { float: left;  width: 26px; }
 .cut-right { float: right; width: 60px; }
 
@@ -234,6 +238,9 @@ textarea {
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+
+	/* background-color: #F9EBEB;
+	border-radius: 10px; */
 } 
 
 .story-editor {
@@ -244,6 +251,9 @@ textarea {
 	word-break: normal;
 
 	/* border: 1px solid #000; */
+
+	/* background-color:#F9EBEB;
+	border-radius: 10px; */
 
 }
 
