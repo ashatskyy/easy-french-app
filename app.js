@@ -162,9 +162,7 @@ function openWriteModal() {
   });
 }
 
-// sendButton.addEventListener("click", function () {
-//   openModal.style.display = "block";
-// });
+
 
 function closeWriteModal() {
   modalWindowWrite.style.height = modalWindowWrite.scrollHeight + "px";
@@ -339,24 +337,7 @@ function updateButtonContainerHeight(form) {
 }
 
 
-// document.addEventListener("dblclick", (e) => {
-//   const story = e.target.closest(".story");
 
-//   if (!story) return;
-//   if (e.target.closest("button")) return;
-
-//   const formEditStory = story.nextElementSibling;
-
-	
-// 	if (!formEditStory?.classList.contains("form-edit-story")) return;
-
-//   const isEditing = formEditStory.style.display === "block";
-
-//   story.style.display = isEditing ? "" : "none";
-// 	formEditStory.style.display = isEditing ? "none" : "block";
-	
-// 	if (!isEditing) updateButtonContainerHeight(formEditStory);
-// });
 
 function focusAtEnd(element) {
   element.focus({ preventScroll: true });
@@ -367,8 +348,55 @@ function focusAtEnd(element) {
 
   const selection = window.getSelection();
   selection.removeAllRanges();
-  selection.addRange(range);
+	selection.addRange(range);
+
 }
+
+
+
+
+
+function stopSpeechForStory(story) {
+  const playBtn = story.querySelector(".play-button");
+  if (!playBtn || playBtn.dataset.state !== "stop") return;
+
+  // Останавливаем звук и сбрасываем таймер паузы между историями
+  window.speechSynthesis.cancel();
+  clearTimeout(timeoutId);
+
+  // Сбрасываем состояние только этой истории
+  playBtn.innerHTML = playIcon;
+  playBtn.dataset.state = "play";
+  story.style.background = "";
+
+  // Если это была одиночная озвучка, обнуляем ссылку на неё
+  if (lastButton === playBtn) lastButton = null;
+
+  // Если шёл режим «слушать всё», завершаем его, иначе кнопка останется в «стоп»
+  if (isPlayingAll) {
+    isPlayingAll = false;
+    buttonInCyclePlayingNow = null;
+    listenToAll.innerHTML = playIcon;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 document.addEventListener("dblclick", (e) => {
   const story = e.target.closest(".story");
@@ -385,12 +413,21 @@ document.addEventListener("dblclick", (e) => {
   story.style.display = isEditing ? "" : "none";
   formEditStory.style.display = isEditing ? "none" : "block";
 
-  if (!isEditing) {
-    updateButtonContainerHeight(formEditStory);
+  // if (!isEditing) {
+  //   updateButtonContainerHeight(formEditStory);
 
-    const editor = formEditStory.querySelector(".story-editor");
-    focusAtEnd(editor);
-  }
+  //   const editor = formEditStory.querySelector(".story-editor");
+  //   focusAtEnd(editor);
+	// }
+	
+	if (!isEditing) {
+  stopSpeechForStory(story);
+
+  updateButtonContainerHeight(formEditStory);
+
+  const editor = formEditStory.querySelector(".story-editor");
+  focusAtEnd(editor);
+}
 });
 
 
